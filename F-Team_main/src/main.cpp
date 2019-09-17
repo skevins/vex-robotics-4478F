@@ -1,9 +1,9 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       C:\Users\MasukVex 09                                      */
+/*    Author:       4478F                                                     */
 /*    Created:      Tue Sep 10 2019                                           */
-/*    Description:  V5 project                                                */
+/*    Description:  Main robot code                                           */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 #include "vex.h"
