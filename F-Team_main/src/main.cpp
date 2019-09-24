@@ -32,7 +32,8 @@ vex::controller Controller1 = vex::controller();
 vex::velocityUnits veloc = vex::velocityUnits::pct;
 
 //variables for math
-int leftPower, rightPower;
+int leftPower;
+int rightPower;
 
 //Pre-auton, not in use currently
 void pre_auton( void ) {
@@ -48,19 +49,9 @@ void autonomous( void ) {
 void usercontrol( void ) {
   while (1) {
     //calculate percentage of power used based on the joysticks. make sure it doesnt go below 50%.
-    if (Controller1.Axis3.value() > 10) { //a little more than zero to compensate for potential drift.
-      leftPower = (Controller1.Axis3.value() / 127) * 100;
-      if (leftPower < 50) {
-        leftPower = 50;
-      }
-    } else leftPower = 0;
+      leftPower = std::max(10, (int)((Controller1.Axis3.value() / 127) * 100));
+      rightPower = std::max(10, (int)((Controller1.Axis2.value() / 127) * 100));
 
-    if (Controller1.Axis2.value() > 10) { //higher than zero to compensate for drift {
-      rightPower = (Controller1.Axis2.value() / 127) * 100;
-      if (rightPower < 50) {
-        rightPower = 50;
-      }
-    } else rightPower = 0;
     //simply spin motors when the joysticks are tilted, if the left/right buttons are not pressed
     if (!Controller1.ButtonLeft.pressing() && !Controller1.ButtonRight.pressing()) {
       //if we are not pressing both buttons, spin the motors at a certain power based on joysticks
@@ -81,26 +72,10 @@ void usercontrol( void ) {
       frontRight.spin(directionType::rev, 100, veloc);
       backLeft.spin(directionType::rev, 100, veloc);
     } 
-
-
+    
     vex::task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources. 
   }
 }
-
-//Temporary debugging function, for testing controller and seeing how it works.
-/*void debug(void) {
-  Brain.Screen.clearLine();
-  Brain.Screen.clearScreen();
-  Brain.Screen.print(Controller1.Axis1.value());
-  Brain.Screen.print(" ");
-  Brain.Screen.print(Controller1.Axis2.value());
-  Brain.Screen.print(" ");
-  Brain.Screen.print(Controller1.Axis3.value());
-  Brain.Screen.print(" ");
-  Brain.Screen.print(Controller1.Axis4.value());
-  
-  vex::task::sleep(100);
-}*/
 
 int main() {
     //Set up callbacks for autonomous and driver control periods.
@@ -116,3 +91,4 @@ int main() {
     }    
        
 }
+
