@@ -34,54 +34,81 @@ void armAuton (int time, int speed, int rotations) {
 //This is the function the draws all of the squares on the auton selection screen.
 void drawSquares() {
 
+  TouchscreenInput();
   Brain.Screen.setPenColor("#9e9e9e");
-
-  int touchX = Brain.Screen.xPosition();
-  int touchY = Brain.Screen.yPosition();
 
   for(int i = 1; i < 7; i++) {
     for(int j = 1; j < 7; j++) {
       if ((j == 1) && (i == 1)) {
-        Brain.Screen.drawRectangle(0, 0, 35, 35, "#9e9e9e");
+        graySquare(0,0);
       } else if ((j == 2) && (i == 1)) {
         redSquare(j * 35 + j - 36, i * 35 + i - 36);
-      } else if ((j == 4) && (i == 1)) {
+      } else if ((j == 5) && (i == 1)) {
         blueSquare(j * 35 + j - 36, i * 35 + i - 36);
-      } else if ( ) {
-        redSquare(j * 35 + j - 36, i * 35 + i - 36);
-      } else if ( ) {
-        blueSquare(j * 35 + j - 36, i * 35 + i - 36);
+      } else if ((j == 1) && (i == 2)) {
+        if (currentSelection == TOPRED) {
+          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+        } else {
+          redSquare(j * 35 + j - 36, i * 35 + i - 36);
+        }
+      } else if ((j == 6) && (i == 2)) {
+        if (currentSelection == TOPBLUE) {
+          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+        } else {
+          blueSquare(j * 35 + j - 36, i * 35 + i - 36);
+        }
       } else {
-        Brain.Screen.drawRectangle(j * 35 + j - 36, i * 35 + i - 36, 35, 35, "#9e9e9e");
+        graySquare(j * 35 + j - 36, i * 35 + i - 36);
       }
-      if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
-      } else if ( ) {
-
+      if ((j == 1) && (i == 3)) {
+        if (currentSelection == SECONDRED) {
+          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+        } else {
+          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+        }
+      }
+      if ((j == 1) && (i == 4)) {
+        if (currentSelection == THIRDRED) {
+          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+        } else {
+          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+        }
+      }
+      if ((j == 1) && (i == 5)) {
+        if (currentSelection == BOTTOMRED) {
+          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+        } else {
+          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+        }
+      }
+      if ((j == 6) && (i == 3)) {
+        if (currentSelection == SECONDBLUE) {
+          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+        } else {
+          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+        }
+      }
+      if ((j == 6) && (i == 4)) {
+        if (currentSelection == THIRDBLUE) {
+          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+        } else {
+          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+        }
+      }
+      if ((j == 6) && (i == 5)) {
+        if (currentSelection == BOTTOMBLUE) {
+          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+        } else {
+          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+        }
       }
     }
   } 
 
   task::sleep(50); // dont let the brain go crazy
 }
+
+
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -97,7 +124,7 @@ void pre_auton( void ) {
   
   bool complete = false;
 
-  while(complete) {
+  while(!complete) {
     drawSquares(); 
     //put something to end?
   }
