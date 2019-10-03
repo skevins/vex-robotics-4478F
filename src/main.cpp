@@ -8,7 +8,7 @@
 /*----------------------------------------------------------------------------*/
 #include "vex.h"
 
-using namespace vex;
+using namespace vex; // very nice removes the "vex::" in EVERYTHING
 
 //this next section lists all of our functions, the ones with 'driver' are for driver control, the ones with 'auton' are for the autonomus period
 
@@ -31,32 +31,56 @@ void armAuton (int time, int speed, int rotations) {
   rightArm.rotateFor( rotations, rotationUnits::rev, false );
 }
 
-//this function will draw a gray square at given coordinates.
-void graySquares(int x, int y) {
+//This is the function the draws all of the squares on the auton selection screen.
+void drawSquares() {
 
   Brain.Screen.setPenColor("#9e9e9e");
+
+  int touchX = Brain.Screen.xPosition();
+  int touchY = Brain.Screen.yPosition();
 
   for(int i = 1; i < 7; i++) {
     for(int j = 1; j < 7; j++) {
       if ((j == 1) && (i == 1)) {
-        Brain.Screen.drawRectangle(x, y, 35, 35, "#9e9e9e");
+        Brain.Screen.drawRectangle(0, 0, 35, 35, "#9e9e9e");
+      } else if ((j == 2) && (i == 1)) {
+        redSquare(j * 35 + j - 36, i * 35 + i - 36);
+      } else if ((j == 4) && (i == 1)) {
+        blueSquare(j * 35 + j - 36, i * 35 + i - 36);
+      } else if ( ) {
+        redSquare(j * 35 + j - 36, i * 35 + i - 36);
+      } else if ( ) {
+        blueSquare(j * 35 + j - 36, i * 35 + i - 36);
       } else {
         Brain.Screen.drawRectangle(j * 35 + j - 36, i * 35 + i - 36, 35, 35, "#9e9e9e");
+      }
+      if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
+      } else if ( ) {
+
       }
     }
   } 
 
-  task::sleep(25);
-}
-
-//this function draws a red square at coordinates
-void redSquare() {
-
-}
-
-//this draws a blue square are given coordinates
-void blueSquare() {
-
+  task::sleep(50); // dont let the brain go crazy
 }
 
 /*---------------------------------------------------------------------------*/
@@ -70,10 +94,12 @@ void blueSquare() {
 /*---------------------------------------------------------------------------*/
 
 void pre_auton( void ) {
-  bool preautComplete = false;
   
-  while(!preautComplete) {
-    graySquares(0, 0);
+  bool complete = false;
+
+  while(complete) {
+    drawSquares(); 
+    //put something to end?
   }
 }
 
@@ -108,17 +134,6 @@ void usercontrol( void ) {
   int clawExtendPCT = 50;
 
   while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo 
-    // values based on feedback from the joysticks.
-
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to 
-    // update your motors, etc.
-    // ........................................................................
-     
-
-    
     /*
     this is the controler map for controler one
     axis 3 = left side drive
