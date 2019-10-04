@@ -39,67 +39,69 @@ void drawSquares() {
 
   for(int i = 1; i < 7; i++) {
     for(int j = 1; j < 7; j++) {
+      int dx = j * 35 + j - 36;
+      int dy = i * 35 + i - 36;
       if ((j == 1) && (i == 1)) {
         graySquare(0,0);
       } else if ((j == 2) && (i == 1)) {
-        redSquare(j * 35 + j - 36, i * 35 + i - 36);
+        redSquare(dx, dy);
       } else if ((j == 5) && (i == 1)) {
-        blueSquare(j * 35 + j - 36, i * 35 + i - 36);
+        blueSquare(dx, dy);
       } else if ((j == 1) && (i == 2)) {
         if (currentSelection == TOPRED) {
-          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+          highlightedSquare(dx, dy);
         } else {
-          redSquare(j * 35 + j - 36, i * 35 + i - 36);
+          redSquare(dx, dy);
         }
       } else if ((j == 6) && (i == 2)) {
         if (currentSelection == TOPBLUE) {
-          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+          highlightedSquare(dx, dy);
         } else {
-          blueSquare(j * 35 + j - 36, i * 35 + i - 36);
+          blueSquare(dx, dy);
         }
       } else {
-        graySquare(j * 35 + j - 36, i * 35 + i - 36);
+        graySquare(dx, dy);
       }
       if ((j == 1) && (i == 3)) {
         if (currentSelection == SECONDRED) {
-          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+          highlightedSquare(dx, dy);
         } else {
-          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+          graySquare(dx, dy);
         }
       }
       if ((j == 1) && (i == 4)) {
         if (currentSelection == THIRDRED) {
-          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+          highlightedSquare(dx, dy);
         } else {
-          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+          graySquare(dx, dy);
         }
       }
       if ((j == 1) && (i == 5)) {
         if (currentSelection == BOTTOMRED) {
-          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+          highlightedSquare(dx, dy);
         } else {
-          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+          graySquare(dx, dy);
         }
       }
       if ((j == 6) && (i == 3)) {
         if (currentSelection == SECONDBLUE) {
-          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+          highlightedSquare(dx, dy);
         } else {
-          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+          graySquare(dx, dy);
         }
       }
       if ((j == 6) && (i == 4)) {
         if (currentSelection == THIRDBLUE) {
-          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+          highlightedSquare(dx, dy);
         } else {
-          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+          graySquare(dx, dy);
         }
       }
       if ((j == 6) && (i == 5)) {
         if (currentSelection == BOTTOMBLUE) {
-          highlightedSquare(j * 35 + j - 36, i * 35 + i - 36);
+          highlightedSquare(dx, dy);
         } else {
-          graySquare(j * 35 + j - 36, i * 35 + i - 36);
+          graySquare(dx, dy);
         }
       }
     }
