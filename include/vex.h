@@ -64,6 +64,10 @@ void highlightedSquare(int x, int y) {
 void graySquare(int x, int y) {
   Brain.Screen.drawRectangle(x, y, 35, 35, "#9e9e9e");
 }
+
+void confirmButton(int x, int y) {
+  Brain.Screen.drawRectangle(x, y, 100, 35, "#00ff00");
+}
 //function for receiving touchscreen input
 int currentSelection = NONE;
 int TouchscreenInput() {

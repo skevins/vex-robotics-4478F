@@ -31,29 +31,35 @@ void armAuton (int time, int speed, int rotations) {
   rightArm.rotateFor( rotations, rotationUnits::rev, false );
 }
 
+int selectionStage = 0;
+int finalSelection;
 //This is the function the draws all of the squares on the auton selection screen.
 void drawSquares() {
 
   TouchscreenInput();
+
+  int tx = Brain.Screen.xPosition();
+  int ty = Brain.Screen.yPosition();
+
   Brain.Screen.setPenColor("#9e9e9e");
 
-  for(int i = 1; i < 7; i++) {
-    for(int j = 1; j < 7; j++) {
-      int dx = j * 35 + j - 36;
-      int dy = i * 35 + i - 36;
-      if ((j == 1) && (i == 1)) {
+  for(int row = 1; row < 7; row++) {
+    for(int column = 1; column < 7; column++) {
+      int dx = column * 35 + column - 36;
+      int dy = row * 35 + row - 36;
+      if ((column == 1) && (row == 1)) {
         graySquare(0,0);
-      } else if ((j == 2) && (i == 1)) {
+      } else if ((column == 2) && (row == 1)) {
         redSquare(dx, dy);
-      } else if ((j == 5) && (i == 1)) {
+      } else if ((column == 5) && (row == 1)) {
         blueSquare(dx, dy);
-      } else if ((j == 1) && (i == 2)) {
+      } else if ((column == 1) && (row == 2)) {
         if (currentSelection == TOPRED) {
           highlightedSquare(dx, dy);
         } else {
           redSquare(dx, dy);
         }
-      } else if ((j == 6) && (i == 2)) {
+      } else if ((column == 6) && (row == 2)) {
         if (currentSelection == TOPBLUE) {
           highlightedSquare(dx, dy);
         } else {
@@ -62,46 +68,156 @@ void drawSquares() {
       } else {
         graySquare(dx, dy);
       }
-      if ((j == 1) && (i == 3)) {
+      if ((column == 1) && (row == 3)) {
         if (currentSelection == SECONDRED) {
           highlightedSquare(dx, dy);
         } else {
           graySquare(dx, dy);
         }
       }
-      if ((j == 1) && (i == 4)) {
+      if ((column == 1) && (row == 4)) {
         if (currentSelection == THIRDRED) {
           highlightedSquare(dx, dy);
         } else {
           graySquare(dx, dy);
         }
       }
-      if ((j == 1) && (i == 5)) {
+      if ((column == 1) && (row == 5)) {
         if (currentSelection == BOTTOMRED) {
           highlightedSquare(dx, dy);
         } else {
           graySquare(dx, dy);
         }
       }
-      if ((j == 6) && (i == 3)) {
+      if ((column == 6) && (row == 3)) {
         if (currentSelection == SECONDBLUE) {
           highlightedSquare(dx, dy);
         } else {
           graySquare(dx, dy);
         }
       }
-      if ((j == 6) && (i == 4)) {
+      if ((column == 6) && (row == 4)) {
         if (currentSelection == THIRDBLUE) {
           highlightedSquare(dx, dy);
         } else {
           graySquare(dx, dy);
         }
       }
-      if ((j == 6) && (i == 5)) {
+      if ((column == 6) && (row == 5)) {
         if (currentSelection == BOTTOMBLUE) {
           highlightedSquare(dx, dy);
         } else {
           graySquare(dx, dy);
+        }
+      }
+      
+      confirmButton(252, 90);
+
+    }      
+  } 
+
+  if ((tx >= 252) && (tx <= 312) && (ty >= 90) && (ty <= 125)) {
+    finalSelection = currentSelection;
+    selectionStage = 1;
+  }
+
+  task::sleep(50); // dont let the brain go crazy
+}
+
+//function for drawing possible paths for robot in pre-auton diagram
+int pathChoice = 0;
+void drawPaths() {
+  int tx = Brain.Screen.xPosition();
+  int ty = Brain.Screen.yPosition();
+  for(int row = 1; row < 7; row++) {
+    for(int column = 1; column < 7; column++) {
+      int dx = column * 35 + column - 36;
+      int dy = row * 35 + row - 36;
+      if ((column == 1) && (row == 1)) {
+        graySquare(0, 0);
+      } else if ((column == 2) && (row == 1)) {
+        redSquare(dx, dy);
+      } else if ((column == 5) && (row == 1)) {
+        blueSquare(dx, dy);
+      } else if ((column == 1) && (row == 2)) {
+        redSquare(dx, dy);
+      } else if ((column == 6) && (row == 2)) {
+        blueSquare(dx, dy);
+      } else {
+        graySquare(dx, dy);
+      }
+
+      Brain.Screen.drawRectangle(252, 85, 45, 45, "#9e9e9e");
+      Brain.Screen.drawRectangle(307, 85, 45, 45, "#9e9e9e");
+
+      if ((tx >= 252) && (tx <= 297) && (ty >= 85) && (ty <= 130)) {
+        pathChoice = 0;
+      } else if ((tx >= 307) && (tx <= 352) && (ty >= 85) && (ty <= 130)) {
+        pathChoice = 1;
+      }
+
+      if (pathChoice == 0) {
+        Brain.Screen.drawRectangle(252, 85, 45, 45, "#ffffff");
+      } else if (pathChoice == 1) {
+        Brain.Screen.drawRectangle(307, 85, 45, 45, "#ffffff");
+      }
+
+      switch (finalSelection) {
+        case TOPRED: {
+          if (pathChoice == 0) {
+
+          } else if (pathChoice == 1) {
+
+          }
+        }
+        case SECONDRED: {
+          if (pathChoice == 0) {
+
+          } else if (pathChoice == 1) {
+
+          }
+        }
+        case THIRDRED: {
+          if (pathChoice == 0) {
+
+          } else if (pathChoice == 1) {
+
+          }
+        }
+        case BOTTOMRED: {
+          if (pathChoice == 0) {
+
+          } else if (pathChoice == 1) {
+
+          }
+        }
+        case TOPBLUE: {
+          if (pathChoice == 0) {
+
+          } else if (pathChoice == 1) {
+
+          } 
+        }
+        case SECONDBLUE: {
+          if (pathChoice == 0) {
+
+          } else if (pathChoice == 1) {
+
+          }
+        }
+        case THIRDBLUE: {
+          if (pathChoice == 0) {
+
+          } else if (pathChoice == 1) {
+
+          }
+        }
+        case BOTTOMBLUE: {
+          if (pathChoice == 0) {
+
+          } else if (pathChoice == 1) {
+
+          }
         }
       }
     }
@@ -110,25 +226,16 @@ void drawSquares() {
   task::sleep(50); // dont let the brain go crazy
 }
 
-
-
-/*---------------------------------------------------------------------------*/
-/*                          Pre-Autonomous Functions                         */
-/*                                                                           */
-/*  You may want to perform some actions before the competition starts.      */
-/*  Do them in the following function.  You must return from this function   */
-/*  or the autonomous and usercontrol tasks will not be started.  This       */
-/*  function is only called once after the cortex has been powered on and    */ 
-/*  not every time that the robot is disabled.                               */
-/*---------------------------------------------------------------------------*/
-
+//commentz plz
 void pre_auton( void ) {
-  
   bool complete = false;
-
+  
   while(!complete) {
-    drawSquares(); 
-    //put something to end?
+    if (selectionStage == 0) {
+      drawSquares(); 
+    } else if (selectionStage == 1) {
+      drawPaths();
+    }
   }
 }
 
@@ -143,6 +250,7 @@ void pre_auton( void ) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous( void ) {
+  
 }
 
 /*---------------------------------------------------------------------------*/
@@ -157,7 +265,7 @@ void autonomous( void ) {
 
 void usercontrol( void ) {
   // User control code here, inside the loop
-  int strafe = 50;
+  int strafePCT = 50;
   int armPCT = 100;
   int clawPCT = 100;
   int clawExtendPCT = 50;
@@ -184,17 +292,17 @@ void usercontrol( void ) {
 
     // the following code is for strafing
     if (controller1.ButtonLeft.pressing()) {
-      leftBack.spin(directionType::fwd, strafe, velocityUnits::pct);
-      leftFront.spin(directionType::rev, strafe, velocityUnits::pct);
-      rightFront.spin(directionType::rev, strafe, velocityUnits::pct);
-      rightBack.spin(directionType::fwd, strafe, velocityUnits::pct);
+      leftBack.spin(directionType::fwd, strafePCT, velocityUnits::pct);
+      leftFront.spin(directionType::rev, strafePCT, velocityUnits::pct);
+      rightFront.spin(directionType::rev, strafePCT, velocityUnits::pct);
+      rightBack.spin(directionType::fwd, strafePCT, velocityUnits::pct);
     }
     //this strafes the other way
     if (controller1.ButtonRight.pressing()) {
-      leftBack.spin(directionType::rev, strafe, velocityUnits::pct);
-      leftFront.spin(directionType::fwd, strafe, velocityUnits::pct);
-      rightFront.spin(directionType::fwd, strafe, velocityUnits::pct);
-      rightBack.spin(directionType::rev, strafe, velocityUnits::pct);
+      leftBack.spin(directionType::rev, strafePCT, velocityUnits::pct);
+      leftFront.spin(directionType::fwd, strafePCT, velocityUnits::pct);
+      rightFront.spin(directionType::fwd, strafePCT, velocityUnits::pct);
+      rightBack.spin(directionType::rev, strafePCT, velocityUnits::pct);
     }
     // the following code raises the arm
     if (controller1.ButtonL1.pressing()) {
@@ -255,6 +363,6 @@ int main() {
        
     //Prevent main from exiting with an infinite loop.                        
     while(1) {
-      task::sleep(100);//Sleep the task for a short amount of time to prevent wasted resources.
+      task::sleep(100); //Sleep the task for a short amount of time to prevent wasted resources.
     }    
 }
