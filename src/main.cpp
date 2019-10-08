@@ -1,18 +1,33 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       C:\Users\Masuk Robotics                                   */
-/*    Created:      Mon Sep 23 2019                                           */
-/*    Description:  V5 project                                                */
+/*    Author:       VEX                                                       */
+/*    Created:      Thu Sep 26 2019                                           */
+/*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// leftFront            motor         1               
+// leftBack             motor         2               
+// rightFront           motor         3               
+// rightBack            motor         4               
+// leftArm              motor         5               
+// rightArm             motor         6               
+// clawMotor            motor         7               
+// clawExtend           motor         8               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+
 #include "vex.h"
 
-using namespace vex; // very nice removes the "vex::" in EVERYTHING
+using namespace vex;
 
-//this next section lists all of our functions, the ones with 'driver' are for driver control, the ones with 'auton' are for the autonomus period
+// A global instance of competition
+competition Competition;
 
-// this is the function we will use to drive in autonomus, the final 4 conditions determine the speed of each indivudal motor, so we can turn, drive straight, and strafe with one function
 void driveAuton (int leftFrontRotations, int rightFrontRotations, int leftBackRotations, int rightBackRotations, int globalSpeed) {
   leftBack.setVelocity(globalSpeed, velocityUnits::pct);
   leftFront.setVelocity(globalSpeed, velocityUnits::pct);
@@ -29,6 +44,62 @@ void armAuton (int time, int speed, int rotations) {
   rightArm.setVelocity(speed, velocityUnits::pct );
   leftArm.rotateFor( rotations, rotationUnits::rev, false );
   rightArm.rotateFor( rotations, rotationUnits::rev, false );
+}
+
+//this function draws a red square at coordinates
+void redSquare(int x, int y) {
+  Brain.Screen.drawRectangle(x, y, 35, 35, "#ff0000");
+}
+
+//this draws a blue square are given coordinates
+void blueSquare(int x, int y) {
+  Brain.Screen.drawRectangle(x, y, 35, 35, "#0000ff");
+}
+
+void highlightedSquare(int x, int y) {
+  Brain.Screen.drawRectangle(x, y, 35, 35, "#ffffff");
+}
+
+void graySquare(int x, int y) {
+  Brain.Screen.drawRectangle(x, y, 35, 35, "#9e9e9e");
+}
+
+void confirmButton(int x, int y) {
+  Brain.Screen.drawRectangle(x, y, 100, 35, "#00ff00");
+}
+
+//function for receiving touchscreen input
+int currentSelection = NONE;
+int TouchscreenInput() {
+  
+  int tx = Brain.Screen.xPosition();
+  int ty = Brain.Screen.yPosition();
+
+  if (Brain.Screen.pressing()) {
+    if ((tx >= 180) && (tx <= 216)) {
+      if ((ty >= 36) && (ty <= 72)) {
+        currentSelection = TOPBLUE;
+      } else if ((ty > 72) && (ty <= 108)) {
+        currentSelection = SECONDBLUE;
+      } else if ((ty > 108) && (ty <= 144)) {
+        currentSelection = THIRDBLUE;
+      } else if ((ty > 144) && (ty <= 180)) {
+        currentSelection = BOTTOMBLUE;
+      }
+    }
+    if ((tx >= 0) && (tx <= 36)) {
+      if ((ty >= 36) && (ty <= 72)) {
+        currentSelection = TOPRED;
+      } else if ((ty > 72) && (ty <= 108)) {
+        currentSelection = SECONDRED;
+      } else if ((ty > 108) && (ty <= 144)) {
+        currentSelection = THIRDRED;
+      } else if ((ty > 144) && (ty <= 180)) {
+        currentSelection = BOTTOMRED;
+      }
+    }
+  }
+  return currentSelection;
 }
 
 int selectionStage = 0;
@@ -119,6 +190,7 @@ void drawSquares() {
   if ((tx >= 252) && (tx <= 312) && (ty >= 90) && (ty <= 125)) {
     finalSelection = currentSelection;
     selectionStage = 1;
+    Brain.Screen.clearScreen(); //get rid of residual green bar
   }
 
   task::sleep(50); // dont let the brain go crazy
@@ -226,8 +298,9 @@ void drawPaths() {
   task::sleep(50); // dont let the brain go crazy
 }
 
-//commentz plz
+
 void pre_auton( void ) {
+  vexcodeInit();
   bool complete = false;
   
   while(!complete) {
@@ -249,8 +322,10 @@ void pre_auton( void ) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void autonomous( void ) {
-  
+void autonomous(void) {
+  // ..........................................................................
+  // Insert autonomous user code here.
+  // ..........................................................................
 }
 
 /*---------------------------------------------------------------------------*/
@@ -263,7 +338,7 @@ void autonomous( void ) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void usercontrol( void ) {
+void usercontrol(void) {
   // User control code here, inside the loop
   int strafePCT = 50;
   int armPCT = 100;
@@ -285,34 +360,34 @@ void usercontrol( void ) {
     down button = claw retract
     */
     // The following code drives the robot
-    leftBack.spin(directionType::fwd, controller1.Axis3.position(), velocityUnits::pct);
-    leftFront.spin(directionType::fwd, controller1.Axis3.position(), velocityUnits::pct);
-    rightBack.spin(directionType::rev, controller1.Axis2.position(), velocityUnits::pct);
-    rightFront.spin(directionType::rev, controller1.Axis2.position(), velocityUnits::pct);
+    leftBack.spin(directionType::fwd, Controller1.Axis3.position(), velocityUnits::pct);
+    leftFront.spin(directionType::fwd, Controller1.Axis3.position(), velocityUnits::pct);
+    rightBack.spin(directionType::rev, Controller1.Axis2.position(), velocityUnits::pct);
+    rightFront.spin(directionType::rev, Controller1.Axis2.position(), velocityUnits::pct);
 
     // the following code is for strafing
-    if (controller1.ButtonLeft.pressing()) {
+    if (Controller1.ButtonLeft.pressing()) {
       leftBack.spin(directionType::fwd, strafePCT, velocityUnits::pct);
       leftFront.spin(directionType::rev, strafePCT, velocityUnits::pct);
       rightFront.spin(directionType::rev, strafePCT, velocityUnits::pct);
       rightBack.spin(directionType::fwd, strafePCT, velocityUnits::pct);
     }
     //this strafes the other way
-    if (controller1.ButtonRight.pressing()) {
+    if (Controller1.ButtonRight.pressing()) {
       leftBack.spin(directionType::rev, strafePCT, velocityUnits::pct);
       leftFront.spin(directionType::fwd, strafePCT, velocityUnits::pct);
       rightFront.spin(directionType::fwd, strafePCT, velocityUnits::pct);
       rightBack.spin(directionType::rev, strafePCT, velocityUnits::pct);
     }
     // the following code raises the arm
-    if (controller1.ButtonL1.pressing()) {
+    if (Controller1.ButtonL1.pressing()) {
       leftArm.stop(brakeType::coast);
       rightArm.stop(brakeType::coast);
       leftArm.spin(directionType::fwd, armPCT, velocityUnits::pct);
       rightArm.spin(directionType::fwd, armPCT, velocityUnits::pct);
     }
     // this is the reverse, lowering the arm
-    else if (controller1.ButtonL2.pressing()) {
+    else if (Controller1.ButtonL2.pressing()) {
       leftArm.spin(directionType::rev, armPCT, velocityUnits::pct);
       rightArm.spin(directionType::rev, armPCT, velocityUnits::pct);
     }
@@ -323,22 +398,22 @@ void usercontrol( void ) {
     }
 
     // the following code opens the claw
-    if (controller1.ButtonR1.pressing()) {
+    if (Controller1.ButtonR1.pressing()) {
       clawMotor.spin(directionType::fwd, clawPCT, velocityUnits::pct);
     }
       
     // the following code closes the claw
-    if (controller1.ButtonR2.pressing()) {
+    if (Controller1.ButtonR2.pressing()) {
       clawMotor.spin(directionType::rev, clawPCT, velocityUnits::pct);
     }
     //this code will extend the claw
-    if (controller1.ButtonUp.pressing()) {
+    if (Controller1.ButtonUp.pressing()) {
       clawExtend.stop(brakeType::coast);
       clawExtend.spin(directionType::fwd, clawExtendPCT, velocityUnits::pct);
     }
 
     //this code will retract the claw
-    else if (controller1.ButtonDown.pressing()) {
+    else if (Controller1.ButtonDown.pressing()) {
       clawExtend.stop(brakeType::coast);
       clawExtend.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
     }
@@ -350,19 +425,20 @@ void usercontrol( void ) {
     task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources. 
   }
 }
+
 //
 // Main will set up the competition functions and callbacks.
 //
 int main() {
-    //Set up callbacks for autonomous and driver control periods.
-    Competition.autonomous( autonomous );
-    Competition.drivercontrol( usercontrol );
-    
-    //Run the pre-autonomous function. 
-    pre_auton();
-       
-    //Prevent main from exiting with an infinite loop.                        
-    while(1) {
-      task::sleep(100); //Sleep the task for a short amount of time to prevent wasted resources.
-    }    
+  // Set up callbacks for autonomous and driver control periods.
+  Competition.autonomous(autonomous);
+  Competition.drivercontrol(usercontrol);
+
+  // Run the pre-autonomous function.
+  pre_auton();
+
+  // Prevent main from exiting with an infinite loop.
+  while (true) {
+    wait(100, msec);
+  }
 }
