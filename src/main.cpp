@@ -66,6 +66,7 @@ void graySquare(int x, int y) {
 
 void confirmButton(int x, int y) {
   Brain.Screen.drawRectangle(x, y, 100, 35, "#00ff00");
+  Brain.Screen.printAt(x+16, y+24, false, "Confirm");
 }
 
 //function for receiving touchscreen input
@@ -193,7 +194,7 @@ void drawSquares() {
     Brain.Screen.clearScreen(); //get rid of residual green bar
   }
 
-  task::sleep(50); // dont let the brain go crazy
+  wait(50, msec); // dont let the brain go crazy
 }
 
 //function for drawing possible paths for robot in pre-auton diagram
@@ -219,19 +220,22 @@ void drawPaths() {
         graySquare(dx, dy);
       }
 
-      Brain.Screen.drawRectangle(252, 85, 45, 45, "#9e9e9e");
-      Brain.Screen.drawRectangle(307, 85, 45, 45, "#9e9e9e");
+      confirmButton(252, 135);
 
       if ((tx >= 252) && (tx <= 297) && (ty >= 85) && (ty <= 130)) {
         pathChoice = 0;
       } else if ((tx >= 307) && (tx <= 352) && (ty >= 85) && (ty <= 130)) {
         pathChoice = 1;
+      } else if ((tx >= 252) && (tx <= 352) && (ty >= 135) && (ty <= 170)) {
+        selectionStage = 2;
       }
 
       if (pathChoice == 0) {
         Brain.Screen.drawRectangle(252, 85, 45, 45, "#ffffff");
+        Brain.Screen.drawRectangle(307, 85, 45, 45, "#9e9e9e");
       } else if (pathChoice == 1) {
         Brain.Screen.drawRectangle(307, 85, 45, 45, "#ffffff");
+        Brain.Screen.drawRectangle(252, 85, 45, 45, "#9e9e9e");
       }
 
       switch (finalSelection) {
@@ -258,7 +262,10 @@ void drawPaths() {
         }
         case BOTTOMRED: {
           if (pathChoice == 0) {
-
+            Brain.Screen.drawLine(14, 162, 18, 162);
+            Brain.Screen.drawLine(18, 162, 18, 108);
+            Brain.Screen.drawRectangle(32, 112, 8, 8, "#ff9d00");
+            Brain.Screen.drawCircle(36, 108, 4);
           } else if (pathChoice == 1) {
 
           }
@@ -295,7 +302,7 @@ void drawPaths() {
     }
   } 
 
-  task::sleep(50); // dont let the brain go crazy
+  wait(50, msec); // dont let the brain go crazy
 }
 
 
@@ -308,6 +315,9 @@ void pre_auton( void ) {
       drawSquares(); 
     } else if (selectionStage == 1) {
       drawPaths();
+    } else if (selectionStage == 2) {
+      complete = true;
+      Brain.Screen.clearScreen();
     }
   }
 }
@@ -323,9 +333,68 @@ void pre_auton( void ) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+  switch(finalSelection) {
+    case TOPRED: {
+      if (pathChoice == 0) {
+        
+      } else if (pathChoice == 1) {
+        //empty if statements mean Aiden hasn't made a path for it yet.
+      }
+    }
+    case SECONDRED: {
+      if (pathChoice == 0) {
+
+      } else if (pathChoice == 1) {
+        
+      }
+    }
+    case THIRDRED: {
+      if (pathChoice == 0) {
+
+      } else if (pathChoice == 1) {
+        
+      }
+    }
+    case BOTTOMRED: {
+      if (pathChoice == 0) {
+        driveAuton(1,1,1,1,50);
+        wait(500, msec);
+        driveAuton(-1,1,-1,1,50);
+        wait(500, msec); 
+        driveAuton(1,1,1,1,20);
+      } else if (pathChoice == 1) {
+        
+      }
+    }
+    case TOPBLUE: {
+      if (pathChoice == 0) {
+
+      } else if (pathChoice == 1) {
+        
+      }
+    }
+    case SECONDBLUE: {
+      if (pathChoice == 0) {
+
+      } else if (pathChoice == 1) {
+        
+      }
+    }
+    case THIRDBLUE: {
+      if (pathChoice == 0) {
+
+      } else if (pathChoice == 1) {
+        
+      }
+    }
+    case BOTTOMBLUE: {
+      if (pathChoice == 0) {
+
+      } else if (pathChoice == 1) {
+        
+      }
+    }
+  }  
 }
 
 /*---------------------------------------------------------------------------*/
@@ -340,10 +409,10 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-  int strafePCT = 50;
+  int strafePCT = 40;
   int armPCT = 100;
   int clawPCT = 100;
-  int clawExtendPCT = 50;
+  int clawExtendPCT = 100;
 
   while (1) {
     /*
@@ -366,14 +435,14 @@ void usercontrol(void) {
     rightFront.spin(directionType::rev, Controller1.Axis2.position(), velocityUnits::pct);
 
     // the following code is for strafing
-    if (Controller1.ButtonLeft.pressing()) {
+    if (Controller1.ButtonRight.pressing()) {
       leftBack.spin(directionType::fwd, strafePCT, velocityUnits::pct);
       leftFront.spin(directionType::rev, strafePCT, velocityUnits::pct);
       rightFront.spin(directionType::rev, strafePCT, velocityUnits::pct);
       rightBack.spin(directionType::fwd, strafePCT, velocityUnits::pct);
     }
     //this strafes the other way
-    if (Controller1.ButtonRight.pressing()) {
+    else if (Controller1.ButtonLeft.pressing()) {
       leftBack.spin(directionType::rev, strafePCT, velocityUnits::pct);
       leftFront.spin(directionType::fwd, strafePCT, velocityUnits::pct);
       rightFront.spin(directionType::fwd, strafePCT, velocityUnits::pct);
@@ -388,8 +457,8 @@ void usercontrol(void) {
     }
     // this is the reverse, lowering the arm
     else if (Controller1.ButtonL2.pressing()) {
-      leftArm.spin(directionType::rev, armPCT, velocityUnits::pct);
-      rightArm.spin(directionType::rev, armPCT, velocityUnits::pct);
+      leftArm.spin(directionType::rev, armPCT/2, velocityUnits::pct);
+      rightArm.spin(directionType::rev, armPCT/2, velocityUnits::pct);
     }
     //this makes sure that when we arent moving the arm it is locked in place
     else {
