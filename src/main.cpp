@@ -12,13 +12,12 @@
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
 // leftFront            motor         1               
-// leftBack             motor         2               
-// rightFront           motor         3               
-// rightBack            motor         4               
-// leftArm              motor         5               
-// rightArm             motor         6               
-// clawMotor            motor         7               
-// clawExtend           motor         8               
+// rightFront           motor         2               
+// leftArm              motor         3               
+// rightArm             motor         4               
+// clawMotor            motor         5               
+// clawExtendLeft       motor         7               
+// clawExtendRight      motor         6               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -28,18 +27,14 @@ using namespace vex;
 // A global instance of competition
 competition Competition;
 
-void driveAuton (int leftFrontRotations, int rightFrontRotations, int leftBackRotations, int rightBackRotations, int globalSpeed) {
-  leftBack.setVelocity(globalSpeed, velocityUnits::pct);
+void driveAuton (int leftFrontRotations, int rightFrontRotations, int globalSpeed) {
   leftFront.setVelocity(globalSpeed, velocityUnits::pct);
-  rightBack.setVelocity(globalSpeed, velocityUnits::pct);
   rightFront.setVelocity(globalSpeed, velocityUnits::pct);
-  leftBack.rotateFor(leftBackRotations, rotationUnits::rev, false);
   leftFront.rotateFor(leftFrontRotations, rotationUnits::rev, false);
-  rightBack.rotateFor(rightBackRotations, rotationUnits::rev, false);
   rightFront.rotateFor(rightFrontRotations, rotationUnits::rev, false);
 }
 //this function is for moving the arm in autonomus
-void armAuton (int time, int speed, int rotations) {
+void armAuton (int _time, int speed, int rotations) {
   leftArm.setVelocity(speed, velocityUnits::pct );
   rightArm.setVelocity(speed, velocityUnits::pct );
   leftArm.rotateFor( rotations, rotationUnits::rev, false );
@@ -357,11 +352,11 @@ void autonomous(void) {
     }
     case BOTTOMRED: {
       if (pathChoice == 0) {
-        driveAuton(1,1,1,1,50);
+        /*driveAuton(1,1,1,1,50);
         wait(500, msec);
         driveAuton(-1,1,-1,1,50);
         wait(500, msec); 
-        driveAuton(1,1,1,1,20);
+        driveAuton(1,1,1,1,20);*/
       } else if (pathChoice == 1) {
         
       }
@@ -409,7 +404,6 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-  int strafePCT = 40;
   int armPCT = 100;
   int clawPCT = 100;
   int clawExtendPCT = 100;
@@ -419,8 +413,6 @@ void usercontrol(void) {
     this is the controler map for controler one
     axis 3 = left side drive
     axis 2 = right side
-    left button = strafe left 
-    right button = strafe right
     L1 bumper = raise arm
     L2 bumper = lower arm
     R1 bumper = open claw
@@ -429,25 +421,9 @@ void usercontrol(void) {
     down button = claw retract
     */
     // The following code drives the robot
-    leftBack.spin(directionType::fwd, Controller1.Axis3.position(), velocityUnits::pct);
     leftFront.spin(directionType::fwd, Controller1.Axis3.position(), velocityUnits::pct);
-    rightBack.spin(directionType::rev, Controller1.Axis2.position(), velocityUnits::pct);
     rightFront.spin(directionType::rev, Controller1.Axis2.position(), velocityUnits::pct);
 
-    // the following code is for strafing
-    if (Controller1.ButtonRight.pressing()) {
-      leftBack.spin(directionType::fwd, strafePCT, velocityUnits::pct);
-      leftFront.spin(directionType::rev, strafePCT, velocityUnits::pct);
-      rightFront.spin(directionType::rev, strafePCT, velocityUnits::pct);
-      rightBack.spin(directionType::fwd, strafePCT, velocityUnits::pct);
-    }
-    //this strafes the other way
-    else if (Controller1.ButtonLeft.pressing()) {
-      leftBack.spin(directionType::rev, strafePCT, velocityUnits::pct);
-      leftFront.spin(directionType::fwd, strafePCT, velocityUnits::pct);
-      rightFront.spin(directionType::fwd, strafePCT, velocityUnits::pct);
-      rightBack.spin(directionType::rev, strafePCT, velocityUnits::pct);
-    }
     // the following code raises the arm
     if (Controller1.ButtonL1.pressing()) {
       leftArm.stop(brakeType::coast);
@@ -477,19 +453,25 @@ void usercontrol(void) {
     }
     //this code will extend the claw
     if (Controller1.ButtonUp.pressing()) {
-      clawExtend.stop(brakeType::coast);
-      clawExtend.spin(directionType::fwd, clawExtendPCT, velocityUnits::pct);
+      clawExtendLeft.stop(brakeType::coast);
+      clawExtendRight.stop(brakeType::coast);
+      clawExtendRight.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
+      clawExtendRight.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
     }
 
     //this code will retract the claw
     else if (Controller1.ButtonDown.pressing()) {
-      clawExtend.stop(brakeType::coast);
-      clawExtend.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
+      clawExtendLeft.stop(brakeType::coast);
+      clawExtendRight.stop(brakeType::coast);
+      clawExtendLeft.spin(directionType::fwd, clawExtendPCT, velocityUnits::pct);
+      clawExtendRight.spin(directionType::fwd, clawExtendPCT, velocityUnits::pct);
+
     }
 
     // this locks the arm extender in place when it is not being used
     else {
-      clawExtend.stop(brakeType::hold);
+      clawExtendLeft.stop(brakeType::hold);
+      clawExtendRight.stop(brakeType::hold);
     }
     task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources. 
   }
