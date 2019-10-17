@@ -12,7 +12,7 @@
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
 // leftFront            motor         1               
-// rightFront           motor         2               
+// rightFront           motor         8               
 // leftArm              motor         3               
 // rightArm             motor         4               
 // clawMotor            motor         5               
@@ -30,15 +30,15 @@ competition Competition;
 void driveAuton (int leftFrontRotations, int rightFrontRotations, int globalSpeed) {
   leftFront.setVelocity(globalSpeed, velocityUnits::pct);
   rightFront.setVelocity(globalSpeed, velocityUnits::pct);
-  leftFront.rotateFor(leftFrontRotations, rotationUnits::rev, false);
-  rightFront.rotateFor(rightFrontRotations, rotationUnits::rev, false);
+  leftFront.rotateFor(leftFrontRotations, rotationUnits::deg, false);
+  rightFront.rotateFor(rightFrontRotations, rotationUnits::deg, false);
 }
 //this function is for moving the arm in autonomus
-void armAuton (int _time, int speed, int rotations) {
+void armAuton (int speed, int rotationsLeft, int rotationsRight) {
   leftArm.setVelocity(speed, velocityUnits::pct );
   rightArm.setVelocity(speed, velocityUnits::pct );
-  leftArm.rotateFor( rotations, rotationUnits::rev, false );
-  rightArm.rotateFor( rotations, rotationUnits::rev, false );
+  leftArm.rotateFor( rotationsLeft, rotationUnits::deg, false );
+  rightArm.rotateFor( rotationsRight, rotationUnits::deg, false );
 }
 
 //this function draws a red square at coordinates
@@ -352,11 +352,22 @@ void autonomous(void) {
     }
     case BOTTOMRED: {
       if (pathChoice == 0) {
-        /*driveAuton(1,1,1,1,50);
-        wait(500, msec);
-        driveAuton(-1,1,-1,1,50);
+        clawMotor.rotateFor(50, rotationUnits::deg, 100);
+        wait(300, msec);
+        driveAuton(570,-570,40);
+        wait(1400, msec);
+        driveAuton(-350,-350,20);
         wait(500, msec); 
-        driveAuton(1,1,1,1,20);*/
+        armAuton(50, 300, 300);
+        wait(1500, msec);
+        clawExtendLeft.setVelocity(50, velocityUnits::pct);
+        clawExtendRight.setVelocity(50, velocityUnits::pct);
+        clawExtendLeft.rotateFor(-130, deg, false);
+        clawExtendRight.rotateFor(-130, deg, false);
+        wait(1000, msec);
+        driveAuton(187, -187, 15);
+        wait(300, msec);
+        armAuton(20,-250, -250);
       } else if (pathChoice == 1) {
         
       }
@@ -406,7 +417,7 @@ void usercontrol(void) {
   // User control code here, inside the loop
   int armPCT = 100;
   int clawPCT = 100;
-  int clawExtendPCT = 100;
+  int clawExtendPCT = 50;
 
   while (1) {
     /*
@@ -448,14 +459,18 @@ void usercontrol(void) {
     }
       
     // the following code closes the claw
-    if (Controller1.ButtonR2.pressing()) {
+    else if (Controller1.ButtonR2.pressing()) {
       clawMotor.spin(directionType::rev, clawPCT, velocityUnits::pct);
+    }
+    //make sure the motor stops when we arent pressing the buttons
+    else {
+      clawMotor.stop(brakeType::hold);
     }
     //this code will extend the claw
     if (Controller1.ButtonUp.pressing()) {
       clawExtendLeft.stop(brakeType::coast);
       clawExtendRight.stop(brakeType::coast);
-      clawExtendRight.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
+      clawExtendLeft.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
       clawExtendRight.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
     }
 
