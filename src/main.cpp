@@ -353,21 +353,22 @@ void autonomous(void) {
     case BOTTOMRED: {
       if (pathChoice == 0) {
         clawMotor.rotateFor(50, rotationUnits::deg, 100);
-        wait(300, msec);
-        driveAuton(570,-570,40);
-        wait(1400, msec);
-        driveAuton(-350,-350,20);
-        wait(500, msec); 
-        armAuton(50, 300, 300);
+        wait(500, msec);
+        driveAuton(565,-565,40);
         wait(1500, msec);
+        driveAuton(-365,-365,20);
+        wait(700, msec); 
+        armAuton(50, 270, 270);
+        wait(1700, msec);
         clawExtendLeft.setVelocity(50, velocityUnits::pct);
         clawExtendRight.setVelocity(50, velocityUnits::pct);
-        clawExtendLeft.rotateFor(-130, deg, false);
-        clawExtendRight.rotateFor(-130, deg, false);
-        wait(1000, msec);
-        driveAuton(187, -187, 15);
-        wait(300, msec);
-        armAuton(20,-250, -250);
+        clawExtendLeft.rotateFor(-140, deg, false);
+        clawExtendRight.rotateFor(-140, deg, false);
+        wait(1100, msec);
+        armAuton(20,-209, -209);
+        wait(400, msec);
+        driveAuton(200, -200, 15); 
+        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
       } else if (pathChoice == 1) {
         
       }
