@@ -331,10 +331,33 @@ void autonomous(void) {
   switch(finalSelection) {
     case TOPRED: {
       if (pathChoice == 0) {
-        
+        clawMotor.rotateFor(50, rotationUnits::deg, 100);
+        wait(500, msec);
+        clawExtendLeft.setVelocity(50, velocityUnits::pct);
+        clawExtendRight.setVelocity(50, velocityUnits::pct);
+        clawExtendLeft.rotateFor(-140, deg, false);
+        clawExtendRight.rotateFor(-140, deg, false);
+        wait(100, msec);
+        driveAuton(170, -170, 40);
+        wait(600, msec);
+        armAuton(75, 200, 200);
+        wait(1000, msec);
+        driveAuton(-380, -380, 50);
+        wait(1500, msec);
+        driveAuton(675, -675, 30);
+        wait(2000, msec);
+        armAuton(75, -100, -100);
+        wait(500, msec);
+        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
+        wait(500, msec);
+        armAuton(75, 100, 100);
+        wait(1000, msec);
+        driveAuton(-300, 300, 50);
+        clawMotor.stop(brakeType::coast);
       } else if (pathChoice == 1) {
         //empty if statements mean Aiden hasn't made a path for it yet.
       }
+      break;
     }
     case SECONDRED: {
       if (pathChoice == 0) {
@@ -342,6 +365,7 @@ void autonomous(void) {
       } else if (pathChoice == 1) {
         
       }
+      break;
     }
     case THIRDRED: {
       if (pathChoice == 0) {
@@ -349,36 +373,85 @@ void autonomous(void) {
       } else if (pathChoice == 1) {
         
       }
+      break;
     }
     case BOTTOMRED: {
       if (pathChoice == 0) {
         clawMotor.rotateFor(50, rotationUnits::deg, 100);
         wait(500, msec);
-        driveAuton(565,-565,40);
-        wait(1500, msec);
-        driveAuton(-365,-365,20);
-        wait(700, msec); 
-        armAuton(50, 270, 270);
-        wait(1700, msec);
         clawExtendLeft.setVelocity(50, velocityUnits::pct);
         clawExtendRight.setVelocity(50, velocityUnits::pct);
         clawExtendLeft.rotateFor(-140, deg, false);
         clawExtendRight.rotateFor(-140, deg, false);
-        wait(1100, msec);
-        armAuton(20,-209, -209);
-        wait(400, msec);
-        driveAuton(200, -200, 15); 
+        wait(100, msec);
+        driveAuton(170, -170, 40);
+        wait(600, msec);
+        armAuton(75, 200, 200);
+        wait(1000, msec);
+        driveAuton(420, 420, 50);
+        wait(1500, msec);
+        driveAuton(675, -675, 30);
+        wait(2000, msec);
+        armAuton(75, -100, -100);
+        wait(500, msec);
         clawMotor.rotateFor(-50, rotationUnits::deg, 100);
+        wait(500, msec);
+        armAuton(75, 100, 100);
+        wait(1000, msec);
+        driveAuton(-300, 300, 50);
+        clawMotor.stop(brakeType::coast);
       } else if (pathChoice == 1) {
         
       }
+      break;
     }
+/*clawMotor.rotateFor(50, rotationUnits::deg, 100);
+        wait(100, msec);
+        driveAuton(110, -110, 20);
+        wait(500, msec);
+        armAuton(40, 540, 540);
+        wait(400, msec);
+        clawExtendLeft.setVelocity(50, velocityUnits::pct);
+        clawExtendRight.setVelocity(50, velocityUnits::pct);
+        clawExtendLeft.rotateFor(-140, deg, false);
+        clawExtendRight.rotateFor(-140, deg, false);
+        wait(700, msec);
+        driveAuton(650, -650, 20);
+        wait(3400, msec);
+        armAuton(30, -300, -300);
+        wait(30, msec);
+        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
+        wait(2000, msec);
+        clawMotor.rotateFor(50, rotationUnits::deg, 100);*/
     case TOPBLUE: {
       if (pathChoice == 0) {
-
+        clawMotor.rotateFor(50, rotationUnits::deg, 100);
+        wait(500, msec);
+        clawExtendLeft.setVelocity(50, velocityUnits::pct);
+        clawExtendRight.setVelocity(50, velocityUnits::pct);
+        clawExtendLeft.rotateFor(-140, deg, false);
+        clawExtendRight.rotateFor(-140, deg, false);
+        wait(100, msec);
+        driveAuton(170, -170, 40);
+        wait(600, msec);
+        armAuton(75, 200, 200);
+        wait(1000, msec);
+        driveAuton(380, 380, 50);
+        wait(1500, msec);
+        driveAuton(675, -675, 30);
+        wait(2000, msec);
+        armAuton(75, -100, -100);
+        wait(500, msec);
+        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
+        wait(500, msec);
+        armAuton(75, 100, 100);
+        wait(1000, msec);
+        driveAuton(-300, 300, 50);
+        clawMotor.stop(brakeType::coast);
       } else if (pathChoice == 1) {
         
       }
+      break;
     }
     case SECONDBLUE: {
       if (pathChoice == 0) {
@@ -386,6 +459,7 @@ void autonomous(void) {
       } else if (pathChoice == 1) {
         
       }
+      break;
     }
     case THIRDBLUE: {
       if (pathChoice == 0) {
@@ -393,13 +467,37 @@ void autonomous(void) {
       } else if (pathChoice == 1) {
         
       }
+      break;
     }
     case BOTTOMBLUE: {
       if (pathChoice == 0) {
-
+        clawMotor.rotateFor(50, rotationUnits::deg, 100);
+        wait(500, msec);
+        clawExtendLeft.setVelocity(50, velocityUnits::pct);
+        clawExtendRight.setVelocity(50, velocityUnits::pct);
+        clawExtendLeft.rotateFor(-140, deg, false);
+        clawExtendRight.rotateFor(-140, deg, false);
+        wait(100, msec);
+        driveAuton(170, -170, 40);
+        wait(600, msec);
+        armAuton(75, 200, 200);
+        wait(1000, msec);
+        driveAuton(-420, -420, 50);
+        wait(1500, msec);
+        driveAuton(675, -675, 30);
+        wait(2000, msec);
+        armAuton(75, -100, -100);
+        wait(500, msec);
+        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
+        wait(500, msec);
+        armAuton(75, 100, 100);
+        wait(1000, msec);
+        driveAuton(-300, 300, 50);
+        clawMotor.stop(brakeType::coast);
       } else if (pathChoice == 1) {
         
       }
+      break;
     }
   }  
 }
@@ -418,7 +516,7 @@ void usercontrol(void) {
   // User control code here, inside the loop
   int armPCT = 100;
   int clawPCT = 100;
-  int clawExtendPCT = 50;
+  int clawExtendPCT = 20;
 
   while (1) {
     /*
