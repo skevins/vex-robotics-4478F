@@ -7,6 +7,6 @@ this is the code for vex robotics competition team 4478F. is very good
 3. the tilt. slip the left side gears a little bit, to sync them with the right
 4. cube guidance. have some way of guiding cubes into the holder.
 5. make the claw motor a 36:1, rather than 18:1. less heat, more power.
-6. anti tips. up, up, and right to the ground we go.
+6. anti tips. we cant go very high without tipping.
 7. clean up joints. everything is so messy, especially the holder assembly.
 8. practice, practice, practice. get to know the rules, and become better.
