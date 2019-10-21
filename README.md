@@ -1,7 +1,7 @@
 # what
 this is the code for vex robotics competition team 4478F. is very good
 
-#todo
+# todo
 1. fix up drive. chains are loose, too inconsistent. i will probably switch to using gears, or direct drive.
 2. wiring. those shits get caught everywhere.
 3. the tilt. slip the left side gears a little bit, to sync them with the right
