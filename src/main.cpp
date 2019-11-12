@@ -27,6 +27,7 @@ using namespace vex;
 
 // A global instance of competition
 competition Competition;
+int pathChoice = 0;
 
 void driveAuton (int leftFrontRotations, int rightFrontRotations, int globalSpeed) {
   leftFront.setVelocity(globalSpeed, velocityUnits::pct);
@@ -193,7 +194,7 @@ void drawSquares() {
     }      
   } 
 
-  if ((tx >= 252) && (tx <= 312) && (ty >= 90) && (ty <= 125)) {
+  if ((tx >= 252) && (tx <= 312) && (ty >= 90) && (ty <= 125) && (currentSelection != NONE)) {
     finalSelection = currentSelection;
     selectionStage = 1;
     Brain.Screen.clearScreen(); //get rid of residual green bar
@@ -201,115 +202,6 @@ void drawSquares() {
 
   wait(50, msec); // dont let the brain go crazy
 }
-
-//function for drawing possible paths for robot in pre-auton diagram
-int pathChoice = 0;
-void drawPaths() {
-  int tx = Brain.Screen.xPosition();
-  int ty = Brain.Screen.yPosition();
-  for(int row = 1; row < 7; row++) {
-    for(int column = 1; column < 7; column++) {
-      int dx = column * 35 + column - 36;
-      int dy = row * 35 + row - 36;
-      if ((column == 1) && (row == 1)) {
-        graySquare(0, 0);
-      } else if ((column == 2) && (row == 1)) {
-        redSquare(dx, dy);
-      } else if ((column == 5) && (row == 1)) {
-        blueSquare(dx, dy);
-      } else if ((column == 1) && (row == 2)) {
-        redSquare(dx, dy);
-      } else if ((column == 6) && (row == 2)) {
-        blueSquare(dx, dy);
-      } else {
-        graySquare(dx, dy);
-      }
-
-      confirmButton(252, 135);
-
-      if ((tx >= 252) && (tx <= 297) && (ty >= 85) && (ty <= 130)) {
-        pathChoice = 0;
-      } else if ((tx >= 307) && (tx <= 352) && (ty >= 85) && (ty <= 130)) {
-        pathChoice = 1;
-      } else if ((tx >= 252) && (tx <= 352) && (ty >= 135) && (ty <= 170)) {
-        selectionStage = 2;
-      }
-
-      if (pathChoice == 0) {
-        Brain.Screen.drawRectangle(252, 85, 45, 45, "#ffffff");
-        Brain.Screen.drawRectangle(307, 85, 45, 45, "#9e9e9e");
-      } else if (pathChoice == 1) {
-        Brain.Screen.drawRectangle(307, 85, 45, 45, "#ffffff");
-        Brain.Screen.drawRectangle(252, 85, 45, 45, "#9e9e9e");
-      }
-
-      switch (finalSelection) {
-        case TOPRED: {
-          if (pathChoice == 0) {
-
-          } else if (pathChoice == 1) {
-
-          }
-        }
-        case SECONDRED: {
-          if (pathChoice == 0) {
-
-          } else if (pathChoice == 1) {
-
-          }
-        }
-        case THIRDRED: {
-          if (pathChoice == 0) {
-
-          } else if (pathChoice == 1) {
-
-          }
-        }
-        case BOTTOMRED: {
-          if (pathChoice == 0) {
-            Brain.Screen.drawLine(14, 162, 18, 162);
-            Brain.Screen.drawLine(18, 162, 18, 108);
-            Brain.Screen.drawRectangle(32, 112, 8, 8, "#ff9d00");
-            Brain.Screen.drawCircle(36, 108, 4);
-          } else if (pathChoice == 1) {
-
-          }
-        }
-        case TOPBLUE: {
-          if (pathChoice == 0) {
-
-          } else if (pathChoice == 1) {
-
-          } 
-        }
-        case SECONDBLUE: {
-          if (pathChoice == 0) {
-
-          } else if (pathChoice == 1) {
-
-          }
-        }
-        case THIRDBLUE: {
-          if (pathChoice == 0) {
-
-          } else if (pathChoice == 1) {
-
-          }
-        }
-        case BOTTOMBLUE: {
-          if (pathChoice == 0) {
-
-          } else if (pathChoice == 1) {
-
-          }
-        }
-      }
-    }
-  } 
-
-  wait(50, msec); // dont let the brain go crazy
-}
-
 
 void pre_auton( void ) {
   vexcodeInit();
@@ -319,8 +211,6 @@ void pre_auton( void ) {
     if (selectionStage == 0) {
       drawSquares(); 
     } else if (selectionStage == 1) {
-      drawPaths();
-    } else if (selectionStage == 2) {
       complete = true;
       Brain.Screen.clearScreen();
     }
@@ -340,189 +230,42 @@ void pre_auton( void ) {
 void autonomous(void) {
   switch(finalSelection) {
     case TOPRED: {
-      if (pathChoice == 0) {
-        /*clawMotor.rotateFor(70, rotationUnits::deg, false);
-        wait(100, msec);
-        armAuton(80, 120);
-        wait(200, msec);
-        clawExtendLeft.setVelocity(25, velocityUnits::pct);
-        clawExtendRight.setVelocity(25, velocityUnits::pct);
-        clawExtendLeft.rotateFor(-125, rotationUnits::deg, false);
-        clawExtendRight.rotateFor(-125, rotationUnits::deg, false);
-        wait(700, msec);
-        driveAuton(60, -60, 70);
-        wait(500, msec);
-        stopDrive();
-        wait(200, msec);
-        clawMotor.rotateFor(-70, rotationUnits::deg, false);
-        wait(400, msec);
-        armAuton(50, -175);
-        wait(500, msec);
-        clawMotor.rotateFor(70, rotationUnits::deg, false);
-        wait(300, msec);
-        armAuton(50, 550);
-        wait(800, msec);
-        driveAuton(620, -630, 20);
-        wait(3000, msec);        
-        clawMotor.rotateFor(-70, rotationUnits::deg, false);
-        wait(100, msec);
-        armAuton(55, -230);
-        wait(900, msec);
-        clawMotor.rotateFor(70, rotationUnits::deg, false);
-        wait(100, msec);
-        armAuton(50, 70);
-        wait(400, msec);
-        driveAuton(-600, 600, 70);
-        wait(700, msec);
-        armAuton(60, -160);
-        wait(500, msec);
-        driveAuton(-390, -390, 70);
-        wait(900, msec);
-        driveAuton(875, -875, 100);
-        wait(1900, msec);
-        clawMotor.rotateFor(-75, rotationUnits::deg, false);
-        wait(100, msec);
-        armAuton(75, 400);
-        wait(600, msec);
-        driveAuton(-100, 100, 20);
-        clawExtendLeft.setVelocity(25, velocityUnits::pct);
-        clawExtendRight.setVelocity(25, velocityUnits::pct);
-        clawExtendLeft.rotateFor(125, rotationUnits::deg, false);
-        clawExtendRight.rotateFor(125, rotationUnits::deg, false);*/
-        armAuton(80, 200);
-        wait(1000, msec);
-        intakeAuton(directionType::rev);
-        driveAuton(40, -40, 80);
-
-
-      } else if (pathChoice == 1) {
-        //empty if statements mean Aiden hasn't made a path for it yet.
-      }
+      armAuton(80, 200);
+      wait(1000, msec);
+      intakeAuton(directionType::rev);
+      driveAuton(40, -40, 80);
       break;
     }
     case SECONDRED: {
-      if (pathChoice == 0) {
 
-      } else if (pathChoice == 1) {
-        
-      }
       break;
     }
     case THIRDRED: {
-      if (pathChoice == 0) {
 
-      } else if (pathChoice == 1) {
-        
-      }
       break;
     }
     case BOTTOMRED: {
-      if (pathChoice == 0) {
-        driveAuton(300, -300, 100);
-        wait(1000, msec);
-        driveAuton(-300, 300, 100);
-      } else if (pathChoice == 1) {
-        
-      }
+      driveAuton(300, -300, 100);
+      wait(1000, msec);
+      driveAuton(-300, 300, 100);
       break;
     }
-/*clawMotor.rotateFor(50, rotationUnits::deg, 100);
-        wait(100, msec);
-        driveAuton(110, -110, 20);
-        wait(500, msec);
-        armAuton(40, 540, 540);
-        wait(400, msec);
-        clawExtendLeft.setVelocity(50, velocityUnits::pct);
-        clawExtendRight.setVelocity(50, velocityUnits::pct);
-        clawExtendLeft.rotateFor(-140, deg, false);
-        clawExtendRight.rotateFor(-140, deg, false);
-        wait(700, msec);
-        driveAuton(650, -650, 20);
-        wait(3400, msec);
-        armAuton(30, -300, -300);
-        wait(30, msec);
-        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
-        wait(2000, msec);
-        clawMotor.rotateFor(50, rotationUnits::deg, 100);*/
     case TOPBLUE: {
-      if (pathChoice == 0) {
-        /*clawMotor.rotateFor(70, rotationUnits::deg, false);
-        wait(100, msec);
-        armAuton(80, 120);
-        wait(200, msec);
-        clawExtendLeft.setVelocity(25, velocityUnits::pct);
-        clawExtendRight.setVelocity(25, velocityUnits::pct);
-        clawExtendLeft.rotateFor(-125, rotationUnits::deg, false);
-        clawExtendRight.rotateFor(-125, rotationUnits::deg, false);
-        wait(700, msec);
-        driveAuton(60, -60, 70);
-        wait(500, msec);
-        stopDrive();
-        wait(200, msec);
-        clawMotor.rotateFor(-70, rotationUnits::deg, false);
-        wait(400, msec);
-        armAuton(50, -175);
-        wait(500, msec);
-        clawMotor.rotateFor(70, rotationUnits::deg, false);
-        wait(300, msec);
-        armAuton(50, 550);
-        wait(800, msec);
-        driveAuton(620, -630, 20);
-        wait(3000, msec);        
-        clawMotor.rotateFor(-70, rotationUnits::deg, false);
-        wait(100, msec);
-        armAuton(55, -230);
-        wait(900, msec);
-        clawMotor.rotateFor(70, rotationUnits::deg, false);
-        wait(100, msec);
-        armAuton(50, 70);
-        wait(400, msec);
-        driveAuton(-600, 600, 70);
-        wait(700, msec);
-        armAuton(60, -160);
-        wait(500, msec);
-        driveAuton(390, 390, 70);
-        wait(900, msec);
-        driveAuton(875, -875, 100);
-        wait(1900, msec);
-        clawMotor.rotateFor(-75, rotationUnits::deg, false);
-        wait(100, msec);
-        armAuton(75, 400);
-        wait(600, msec);
-        driveAuton(-100, 100, 20);
-        clawExtendLeft.setVelocity(25, velocityUnits::pct);
-        clawExtendRight.setVelocity(25, velocityUnits::pct);
-        clawExtendLeft.rotateFor(125, rotationUnits::deg, false);
-        clawExtendRight.rotateFor(125, rotationUnits::deg, false);*/
-      } else if (pathChoice == 1) {
-        
-      }
+
       break;
     }
     case SECONDBLUE: {
-      if (pathChoice == 0) {
 
-      } else if (pathChoice == 1) {
-        
-      }
       break;
     }
     case THIRDBLUE: {
-      if (pathChoice == 0) {
 
-      } else if (pathChoice == 1) {
-        
-      }
       break;
     }
     case BOTTOMBLUE: {
-      if (pathChoice == 0) {
-        driveAuton(300, -300, 100);
-        wait(1000, msec);
-        driveAuton(-300, 300, 100);
-      } else if (pathChoice == 1) {
-        
-      }
+      driveAuton(300, -300, 100);
+      wait(1000, msec);
+      driveAuton(-300, 300, 100);
       break;
     }
   }  
@@ -537,29 +280,44 @@ void autonomous(void) {
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+double driveFactor = 1.25;
+
+void switchDriveSpeed() {
+  if (driveFactor == 1.25) {
+    driveFactor = 1.75;
+  } else if (driveFactor == 1.75) {
+    driveFactor = 2.50;
+  } else if (driveFactor == 2.50) {
+    driveFactor = 1.25;
+  } else {
+    driveFactor = 1.75; //backup in case something dumb happens and this code is reached
+  }
+}
 
 void usercontrol(void) {
   // User control code here, inside the loop
   int armPCT = 60;
   int intakePCT = 75;
-
   while (1) {
-    /*
-    this is the controler map for controler one
-    axis 3 = left side drive
-    axis 2 = right side
-    L1 bumper = raise arm
-    L2 bumper = lower arm
-    R1 bumper = open claw
-    R2 bumper = close claw
-    up button = claw extend
-    down button = claw retract
-    */
-    // The following code drives the robot
-    leftFront.spin(directionType::fwd, Controller1.Axis3.position()/1.75, velocityUnits::pct);
-    rightFront.spin(directionType::rev, Controller1.Axis2.position()/1.75, velocityUnits::pct);
-    leftBack.spin(directionType::fwd, Controller1.Axis3.position()/1.75, velocityUnits::pct);
-    rightBack.spin(directionType::rev, Controller1.Axis2.position()/1.75, velocityUnits::pct);
+    Controller1.ButtonX.pressed(switchDriveSpeed); // <-- Changes the scale at which the drive motors spin. Useful for precision movements
+
+    // The following code drives the robot, while accounting for DRIFT THAT SHOULDNT BE THERE
+    if (abs(Controller1.Axis3.position()) >= 4) {
+      leftFront.spin(directionType::fwd, Controller1.Axis3.position()/driveFactor, velocityUnits::pct);
+      leftBack.spin(directionType::fwd, Controller1.Axis3.position()/driveFactor, velocityUnits::pct);
+    } else {
+      leftFront.stop(brakeType::hold);
+      leftBack.stop(brakeType::hold);
+    }
+
+    if (abs(Controller1.Axis2.position()) >= 4) {
+      rightFront.spin(directionType::rev, Controller1.Axis2.position()/driveFactor, velocityUnits::pct);
+      rightBack.spin(directionType::rev, Controller1.Axis2.position()/driveFactor, velocityUnits::pct);
+    } else {
+      rightFront.stop(brakeType::hold);
+      rightBack.stop(brakeType::hold);
+    }
+
     // the following code raises the arm
     if (Controller1.ButtonL1.pressing()) {
       rightArm.spin(directionType::fwd, armPCT, velocityUnits::pct);
@@ -596,16 +354,10 @@ void usercontrol(void) {
       leftArm.spin(directionType::fwd, 50, velocityUnits::pct);
     } else if (Controller1.ButtonRight.pressing()) {
       rightArm.spin(directionType::fwd, 50, velocityUnits::pct);
+    } else if (Controller1.ButtonB.pressing()) {
+      rightArm.rotateTo(leftArm.rotation(rotationUnits::rev), rotationUnits::rev, false);
     }
-    /*if (Controller1.ButtonX.pressing()) {
-      leftFront.spin(directionType::fwd, 50, velocityUnits::pct);
-      rightFront.spin(directionType::rev, 50, velocityUnits::pct);
-    }
-    else if (Controller1.ButtonB.pressing()) {
-      leftFront.spin(directionType::rev, 50, velocityUnits::pct);
-      rightFront.spin(directionType::fwd, 50, velocityUnits::pct);
-    }*/
-    task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources. 
+    task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources.
   }
 }
 
