@@ -13,11 +13,12 @@
 // Controller1          controller                    
 // leftFront            motor         1               
 // rightFront           motor         8               
-// leftArm              motor         3               
-// rightArm             motor         4               
-// clawMotor            motor         5               
-// clawExtendLeft       motor         7               
-// clawExtendRight      motor         6               
+// leftArm              motor         2               
+// rightArm             motor         9               
+// leftBack             motor         5               
+// intakeLeft           motor         7               
+// intakeRight          motor         6               
+// rightBack            motor         10              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -34,13 +35,22 @@ void driveAuton (int leftFrontRotations, int rightFrontRotations, int globalSpee
   rightFront.rotateFor(rightFrontRotations, rotationUnits::deg, false);
 }
 //this function is for moving the arm in autonomus
-void armAuton (int speed, int rotationsLeft, int rotationsRight) {
+void armAuton (int speed, int degs) {
   leftArm.setVelocity(speed, velocityUnits::pct );
   rightArm.setVelocity(speed, velocityUnits::pct );
-  leftArm.rotateFor( rotationsLeft, rotationUnits::deg, false );
-  rightArm.rotateFor( rotationsRight, rotationUnits::deg, false );
+  leftArm.rotateFor( degs, rotationUnits::deg, false );
+  rightArm.rotateFor( degs, rotationUnits::deg, false );
 }
-
+void intakeAuton(directionType dir) {
+  intakeLeft.spin(dir, 100, velocityUnits::pct);
+  intakeRight.spin(dir, 100, velocityUnits::pct);
+}
+void stopDrive() {
+  leftFront.stop(brakeType::hold);
+  rightFront.stop(brakeType::hold);
+  leftBack.stop(brakeType::hold);
+  rightBack.stop(brakeType::hold);
+}
 //this function draws a red square at coordinates
 void redSquare(int x, int y) {
   Brain.Screen.drawRectangle(x, y, 35, 35, "#ff0000");
@@ -331,29 +341,60 @@ void autonomous(void) {
   switch(finalSelection) {
     case TOPRED: {
       if (pathChoice == 0) {
-        clawMotor.rotateFor(50, rotationUnits::deg, 100);
-        wait(500, msec);
-        clawExtendLeft.setVelocity(50, velocityUnits::pct);
-        clawExtendRight.setVelocity(50, velocityUnits::pct);
-        clawExtendLeft.rotateFor(-140, deg, false);
-        clawExtendRight.rotateFor(-140, deg, false);
+        /*clawMotor.rotateFor(70, rotationUnits::deg, false);
         wait(100, msec);
-        driveAuton(170, -170, 40);
+        armAuton(80, 120);
+        wait(200, msec);
+        clawExtendLeft.setVelocity(25, velocityUnits::pct);
+        clawExtendRight.setVelocity(25, velocityUnits::pct);
+        clawExtendLeft.rotateFor(-125, rotationUnits::deg, false);
+        clawExtendRight.rotateFor(-125, rotationUnits::deg, false);
+        wait(700, msec);
+        driveAuton(60, -60, 70);
+        wait(500, msec);
+        stopDrive();
+        wait(200, msec);
+        clawMotor.rotateFor(-70, rotationUnits::deg, false);
+        wait(400, msec);
+        armAuton(50, -175);
+        wait(500, msec);
+        clawMotor.rotateFor(70, rotationUnits::deg, false);
+        wait(300, msec);
+        armAuton(50, 550);
+        wait(800, msec);
+        driveAuton(620, -630, 20);
+        wait(3000, msec);        
+        clawMotor.rotateFor(-70, rotationUnits::deg, false);
+        wait(100, msec);
+        armAuton(55, -230);
+        wait(900, msec);
+        clawMotor.rotateFor(70, rotationUnits::deg, false);
+        wait(100, msec);
+        armAuton(50, 70);
+        wait(400, msec);
+        driveAuton(-600, 600, 70);
+        wait(700, msec);
+        armAuton(60, -160);
+        wait(500, msec);
+        driveAuton(-390, -390, 70);
+        wait(900, msec);
+        driveAuton(875, -875, 100);
+        wait(1900, msec);
+        clawMotor.rotateFor(-75, rotationUnits::deg, false);
+        wait(100, msec);
+        armAuton(75, 400);
         wait(600, msec);
-        armAuton(75, 200, 200);
+        driveAuton(-100, 100, 20);
+        clawExtendLeft.setVelocity(25, velocityUnits::pct);
+        clawExtendRight.setVelocity(25, velocityUnits::pct);
+        clawExtendLeft.rotateFor(125, rotationUnits::deg, false);
+        clawExtendRight.rotateFor(125, rotationUnits::deg, false);*/
+        armAuton(80, 200);
         wait(1000, msec);
-        driveAuton(-380, -380, 50);
-        wait(1500, msec);
-        driveAuton(675, -675, 30);
-        wait(2000, msec);
-        armAuton(75, -100, -100);
-        wait(500, msec);
-        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
-        wait(500, msec);
-        armAuton(75, 100, 100);
-        wait(1000, msec);
-        driveAuton(-300, 300, 50);
-        clawMotor.stop(brakeType::coast);
+        intakeAuton(directionType::rev);
+        driveAuton(40, -40, 80);
+
+
       } else if (pathChoice == 1) {
         //empty if statements mean Aiden hasn't made a path for it yet.
       }
@@ -377,29 +418,9 @@ void autonomous(void) {
     }
     case BOTTOMRED: {
       if (pathChoice == 0) {
-        clawMotor.rotateFor(50, rotationUnits::deg, 100);
-        wait(500, msec);
-        clawExtendLeft.setVelocity(50, velocityUnits::pct);
-        clawExtendRight.setVelocity(50, velocityUnits::pct);
-        clawExtendLeft.rotateFor(-140, deg, false);
-        clawExtendRight.rotateFor(-140, deg, false);
-        wait(100, msec);
-        driveAuton(170, -170, 40);
-        wait(600, msec);
-        armAuton(75, 200, 200);
+        driveAuton(300, -300, 100);
         wait(1000, msec);
-        driveAuton(420, 420, 50);
-        wait(1500, msec);
-        driveAuton(675, -675, 30);
-        wait(2000, msec);
-        armAuton(75, -100, -100);
-        wait(500, msec);
-        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
-        wait(500, msec);
-        armAuton(75, 100, 100);
-        wait(1000, msec);
-        driveAuton(-300, 300, 50);
-        clawMotor.stop(brakeType::coast);
+        driveAuton(-300, 300, 100);
       } else if (pathChoice == 1) {
         
       }
@@ -425,29 +446,54 @@ void autonomous(void) {
         clawMotor.rotateFor(50, rotationUnits::deg, 100);*/
     case TOPBLUE: {
       if (pathChoice == 0) {
-        clawMotor.rotateFor(50, rotationUnits::deg, 100);
-        wait(500, msec);
-        clawExtendLeft.setVelocity(50, velocityUnits::pct);
-        clawExtendRight.setVelocity(50, velocityUnits::pct);
-        clawExtendLeft.rotateFor(-140, deg, false);
-        clawExtendRight.rotateFor(-140, deg, false);
+        /*clawMotor.rotateFor(70, rotationUnits::deg, false);
         wait(100, msec);
-        driveAuton(170, -170, 40);
+        armAuton(80, 120);
+        wait(200, msec);
+        clawExtendLeft.setVelocity(25, velocityUnits::pct);
+        clawExtendRight.setVelocity(25, velocityUnits::pct);
+        clawExtendLeft.rotateFor(-125, rotationUnits::deg, false);
+        clawExtendRight.rotateFor(-125, rotationUnits::deg, false);
+        wait(700, msec);
+        driveAuton(60, -60, 70);
+        wait(500, msec);
+        stopDrive();
+        wait(200, msec);
+        clawMotor.rotateFor(-70, rotationUnits::deg, false);
+        wait(400, msec);
+        armAuton(50, -175);
+        wait(500, msec);
+        clawMotor.rotateFor(70, rotationUnits::deg, false);
+        wait(300, msec);
+        armAuton(50, 550);
+        wait(800, msec);
+        driveAuton(620, -630, 20);
+        wait(3000, msec);        
+        clawMotor.rotateFor(-70, rotationUnits::deg, false);
+        wait(100, msec);
+        armAuton(55, -230);
+        wait(900, msec);
+        clawMotor.rotateFor(70, rotationUnits::deg, false);
+        wait(100, msec);
+        armAuton(50, 70);
+        wait(400, msec);
+        driveAuton(-600, 600, 70);
+        wait(700, msec);
+        armAuton(60, -160);
+        wait(500, msec);
+        driveAuton(390, 390, 70);
+        wait(900, msec);
+        driveAuton(875, -875, 100);
+        wait(1900, msec);
+        clawMotor.rotateFor(-75, rotationUnits::deg, false);
+        wait(100, msec);
+        armAuton(75, 400);
         wait(600, msec);
-        armAuton(75, 200, 200);
-        wait(1000, msec);
-        driveAuton(380, 380, 50);
-        wait(1500, msec);
-        driveAuton(675, -675, 30);
-        wait(2000, msec);
-        armAuton(75, -100, -100);
-        wait(500, msec);
-        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
-        wait(500, msec);
-        armAuton(75, 100, 100);
-        wait(1000, msec);
-        driveAuton(-300, 300, 50);
-        clawMotor.stop(brakeType::coast);
+        driveAuton(-100, 100, 20);
+        clawExtendLeft.setVelocity(25, velocityUnits::pct);
+        clawExtendRight.setVelocity(25, velocityUnits::pct);
+        clawExtendLeft.rotateFor(125, rotationUnits::deg, false);
+        clawExtendRight.rotateFor(125, rotationUnits::deg, false);*/
       } else if (pathChoice == 1) {
         
       }
@@ -471,29 +517,9 @@ void autonomous(void) {
     }
     case BOTTOMBLUE: {
       if (pathChoice == 0) {
-        clawMotor.rotateFor(50, rotationUnits::deg, 100);
-        wait(500, msec);
-        clawExtendLeft.setVelocity(50, velocityUnits::pct);
-        clawExtendRight.setVelocity(50, velocityUnits::pct);
-        clawExtendLeft.rotateFor(-140, deg, false);
-        clawExtendRight.rotateFor(-140, deg, false);
-        wait(100, msec);
-        driveAuton(170, -170, 40);
-        wait(600, msec);
-        armAuton(75, 200, 200);
+        driveAuton(300, -300, 100);
         wait(1000, msec);
-        driveAuton(-420, -420, 50);
-        wait(1500, msec);
-        driveAuton(675, -675, 30);
-        wait(2000, msec);
-        armAuton(75, -100, -100);
-        wait(500, msec);
-        clawMotor.rotateFor(-50, rotationUnits::deg, 100);
-        wait(500, msec);
-        armAuton(75, 100, 100);
-        wait(1000, msec);
-        driveAuton(-300, 300, 50);
-        clawMotor.stop(brakeType::coast);
+        driveAuton(-300, 300, 100);
       } else if (pathChoice == 1) {
         
       }
@@ -514,9 +540,8 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
-  int armPCT = 100;
-  int clawPCT = 100;
-  int clawExtendPCT = 20;
+  int armPCT = 60;
+  int intakePCT = 75;
 
   while (1) {
     /*
@@ -531,20 +556,19 @@ void usercontrol(void) {
     down button = claw retract
     */
     // The following code drives the robot
-    leftFront.spin(directionType::fwd, Controller1.Axis3.position(), velocityUnits::pct);
-    rightFront.spin(directionType::rev, Controller1.Axis2.position(), velocityUnits::pct);
-
+    leftFront.spin(directionType::fwd, Controller1.Axis3.position()/1.75, velocityUnits::pct);
+    rightFront.spin(directionType::rev, Controller1.Axis2.position()/1.75, velocityUnits::pct);
+    leftBack.spin(directionType::fwd, Controller1.Axis3.position()/1.75, velocityUnits::pct);
+    rightBack.spin(directionType::rev, Controller1.Axis2.position()/1.75, velocityUnits::pct);
     // the following code raises the arm
     if (Controller1.ButtonL1.pressing()) {
-      leftArm.stop(brakeType::coast);
-      rightArm.stop(brakeType::coast);
-      leftArm.spin(directionType::fwd, armPCT, velocityUnits::pct);
       rightArm.spin(directionType::fwd, armPCT, velocityUnits::pct);
+      leftArm.spin(directionType::fwd, armPCT, velocityUnits::pct);
     }
     // this is the reverse, lowering the arm
     else if (Controller1.ButtonL2.pressing()) {
-      leftArm.spin(directionType::rev, armPCT/2, velocityUnits::pct);
-      rightArm.spin(directionType::rev, armPCT/2, velocityUnits::pct);
+      leftArm.spin(directionType::rev, armPCT-10, velocityUnits::pct);
+      rightArm.spin(directionType::rev, armPCT-10, velocityUnits::pct);
     }
     //this makes sure that when we arent moving the arm it is locked in place
     else {
@@ -554,39 +578,33 @@ void usercontrol(void) {
 
     // the following code opens the claw
     if (Controller1.ButtonR1.pressing()) {
-      clawMotor.spin(directionType::fwd, clawPCT, velocityUnits::pct);
+      intakeLeft.spin(directionType::rev, intakePCT, velocityUnits::pct);
+      intakeRight.spin(directionType::rev, intakePCT, velocityUnits::pct);
     }
       
     // the following code closes the claw
     else if (Controller1.ButtonR2.pressing()) {
-      clawMotor.spin(directionType::rev, clawPCT, velocityUnits::pct);
+      intakeLeft.spin(directionType::fwd, intakePCT, velocityUnits::pct);
+      intakeRight.spin(directionType::fwd, intakePCT, velocityUnits::pct);
     }
     //make sure the motor stops when we arent pressing the buttons
     else {
-      clawMotor.stop(brakeType::hold);
+      intakeLeft.stop(brakeType::hold);
+      intakeRight.stop(brakeType::hold);
     }
-    //this code will extend the claw
-    if (Controller1.ButtonUp.pressing()) {
-      clawExtendLeft.stop(brakeType::coast);
-      clawExtendRight.stop(brakeType::coast);
-      clawExtendLeft.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
-      clawExtendRight.spin(directionType::rev, clawExtendPCT, velocityUnits::pct);
+    if (Controller1.ButtonLeft.pressing()) {
+      leftArm.spin(directionType::fwd, 50, velocityUnits::pct);
+    } else if (Controller1.ButtonRight.pressing()) {
+      rightArm.spin(directionType::fwd, 50, velocityUnits::pct);
     }
-
-    //this code will retract the claw
-    else if (Controller1.ButtonDown.pressing()) {
-      clawExtendLeft.stop(brakeType::coast);
-      clawExtendRight.stop(brakeType::coast);
-      clawExtendLeft.spin(directionType::fwd, clawExtendPCT, velocityUnits::pct);
-      clawExtendRight.spin(directionType::fwd, clawExtendPCT, velocityUnits::pct);
-
+    /*if (Controller1.ButtonX.pressing()) {
+      leftFront.spin(directionType::fwd, 50, velocityUnits::pct);
+      rightFront.spin(directionType::rev, 50, velocityUnits::pct);
     }
-
-    // this locks the arm extender in place when it is not being used
-    else {
-      clawExtendLeft.stop(brakeType::hold);
-      clawExtendRight.stop(brakeType::hold);
-    }
+    else if (Controller1.ButtonB.pressing()) {
+      leftFront.spin(directionType::rev, 50, velocityUnits::pct);
+      rightFront.spin(directionType::fwd, 50, velocityUnits::pct);
+    }*/
     task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources. 
   }
 }

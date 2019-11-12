@@ -11,11 +11,12 @@ brain  Brain;
 controller Controller1 = controller(primary);
 motor leftFront = motor(PORT1, ratio18_1, true);
 motor rightFront = motor(PORT8, ratio18_1, true);
-motor leftArm = motor(PORT3, ratio36_1, true);
-motor rightArm = motor(PORT4, ratio36_1, false);
-motor clawMotor = motor(PORT5, ratio18_1, false);
-motor clawExtendLeft = motor(PORT7, ratio36_1, false);
-motor clawExtendRight = motor(PORT6, ratio36_1, true);
+motor leftArm = motor(PORT2, ratio36_1, true);
+motor rightArm = motor(PORT9, ratio36_1, false);
+motor leftBack = motor(PORT5, ratio18_1, false);
+motor intakeLeft = motor(PORT7, ratio18_1, false);
+motor intakeRight = motor(PORT6, ratio18_1, true);
+motor rightBack = motor(PORT10, ratio18_1, false);
 
 // VEXcode generated functions
 
