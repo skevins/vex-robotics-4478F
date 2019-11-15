@@ -201,7 +201,7 @@ void drawSquares() {
   if ((tx >= 252) && (tx <= 312) && (ty >= 90) && (ty <= 125) && (currentSelection != NONE)) {
     finalSelection = currentSelection;
     selectionStage = 1;
-    Brain.Screen.clearScreen(); //get rid of residual green bar
+    Brain.Screen.clearScreen(); //get rid of residual stuff
   }
 
   wait(50, msec); // dont let the brain go crazy
@@ -259,6 +259,13 @@ void autonomous(void) {
       driveAuton(410, 410, 50);
       wait(1500, msec);
       driveAuton(1000, -1000, 50);
+      wait(1500, msec);
+      intakeAuton(directionType::fwd);
+      driveAuton(20, -20, 75);
+      wait(100, msec);
+      armAuton(80, 550);
+      wait(1000, msec);
+      armAuton(80, -450);
   switch(finalSelection) {
     case TOPRED: {
 
@@ -312,13 +319,11 @@ double driveFactor = 1.25;
 
 void switchDriveSpeed() {
   if (driveFactor == 1.25) {
-    driveFactor = 1.75;
-  } else if (driveFactor == 1.75) {
     driveFactor = 2.50;
   } else if (driveFactor == 2.50) {
     driveFactor = 1.25;
   } else {
-    driveFactor = 1.75; //backup in case something dumb happens and this code is reached
+    driveFactor = 2; //backup in case something dumb happens and this code is reached
   }
 }
 
@@ -357,7 +362,7 @@ void usercontrol(void) {
       rightArm.spin(directionType::rev, armPCT-10, velocityUnits::pct);
     }
     //this makes sure that when we arent moving the arm it is locked in place
-    else {
+    else if (!Controller1.ButtonB.Pressing()) {
       leftArm.stop(brakeType::hold);
       rightArm.stop(brakeType::hold);
     }
