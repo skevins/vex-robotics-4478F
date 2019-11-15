@@ -13,11 +13,11 @@
 // Controller1          controller                    
 // leftFront            motor         1               
 // rightFront           motor         8               
-// leftArm              motor         2               
+// leftArm              motor         20              
 // rightArm             motor         9               
-// leftBack             motor         5               
-// intakeLeft           motor         7               
-// intakeRight          motor         6               
+// leftBack             motor         19              
+// intakeLeft           motor         18              
+// intakeRight          motor         7               
 // rightBack            motor         10              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -34,6 +34,10 @@ void driveAuton (int leftFrontRotations, int rightFrontRotations, int globalSpee
   rightFront.setVelocity(globalSpeed, velocityUnits::pct);
   leftFront.rotateFor(leftFrontRotations, rotationUnits::deg, false);
   rightFront.rotateFor(rightFrontRotations, rotationUnits::deg, false);
+  leftBack.setVelocity(globalSpeed, velocityUnits::pct);
+  rightBack.setVelocity(globalSpeed, velocityUnits::pct);
+  leftBack.rotateFor(leftFrontRotations, rotationUnits::deg, false);
+  rightBack.rotateFor(rightFrontRotations, rotationUnits::deg, false);
 }
 //this function is for moving the arm in autonomus
 void armAuton (int speed, int degs) {
@@ -228,12 +232,36 @@ void pre_auton( void ) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
+      intakeLeft.stop(brakeType::hold);
+      intakeRight.stop(brakeType::hold);
+      armAuton(80, 120);
+      wait(300, msec);
+      driveAuton(20, -20, 100);
+      wait(20, msec);
+      stopDrive();
+      wait(30, msec);
+      driveAuton(80, -80, 100);
+      wait(700, msec);
+      intakeAuton(directionType::rev);
+      driveAuton(80, -80, 80);
+      armAuton(80, -80);
+      wait(300, msec);
+      armAuton(80, 500);
+      wait(600, msec);
+      driveAuton(578, -570, 40);
+      wait(1500, msec);
+      armAuton(80, -400);
+      wait(1000, msec);
+      driveAuton(-560, 580, 60);
+      wait(100, msec);
+      armAuton(80, -60);
+      wait(1100, msec);
+      driveAuton(410, 410, 50);
+      wait(1500, msec);
+      driveAuton(1000, -1000, 50);
   switch(finalSelection) {
     case TOPRED: {
-      armAuton(80, 200);
-      wait(1000, msec);
-      intakeAuton(directionType::rev);
-      driveAuton(40, -40, 80);
+
       break;
     }
     case SECONDRED: {
@@ -306,17 +334,17 @@ void usercontrol(void) {
       leftFront.spin(directionType::fwd, Controller1.Axis3.position()/driveFactor, velocityUnits::pct);
       leftBack.spin(directionType::fwd, Controller1.Axis3.position()/driveFactor, velocityUnits::pct);
     } else {
-      leftFront.stop(brakeType::hold);
-      leftBack.stop(brakeType::hold);
+      leftFront.stop();
+      leftBack.stop();
     }
 
     if (abs(Controller1.Axis2.position()) >= 4) {
       rightFront.spin(directionType::rev, Controller1.Axis2.position()/driveFactor, velocityUnits::pct);
       rightBack.spin(directionType::rev, Controller1.Axis2.position()/driveFactor, velocityUnits::pct);
     } else {
-      rightFront.stop(brakeType::hold);
-      rightBack.stop(brakeType::hold);
-    }
+      rightFront.stop();
+      rightBack.stop();
+    } 
 
     // the following code raises the arm
     if (Controller1.ButtonL1.pressing()) {
