@@ -19,7 +19,12 @@
 using namespace vex;
 
 competition Competition;
+
 int sel = 0;
+
+float sign(float a) {
+  return (a < 0) ? -1 : 1;
+}
 
 void autonSel() {
   if (sel <= 4) 
@@ -59,15 +64,36 @@ void autonomous(void) {
     }
   }
 }
-
+int ls = 0;
+int rs = 0;
 void usercontrol(void) {
   while (1) {
-    leftDrive.spin(forward, fmin(fabs(Controller1.Axis3.position()/1.28), 6), percent);
-    rightDrive.spin(reverse, fmin(fabs(Controller1.Axis2.position()/1.28), 6), percent);
+
+    int l = Controller1.Axis3.position();
+    int r = Controller1.Axis2.position();
+
+    if (ls < l)
+      ls += 5;
+    else if (ls > l) 
+      ls -= 5;
+
+    if (rs < r)
+      rs += 5;
+    else if (rs > r)
+      rs -= 5;
+    
+    leftDrive.spin(forward, ls, percent);
+    rightDrive.spin(reverse, rs, percent);
 
     if (Controller1.ButtonL1.pressing()) {
       
     }
+    /*Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print(l);
+    Controller1.Screen.print(ls);
+    Controller1.Screen.print(r);
+    Controller1.Screen.print(rs);*/
     wait(20, msec);
   }
 }
