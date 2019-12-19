@@ -67,34 +67,54 @@ void autonomous(void) {
 int ls = 0;
 int rs = 0;
 void usercontrol(void) {
+  int leftIntegral = 0;
+  int rightIntegral = 0;
+  int leftPrevError = 0;
+  int rightPrevError = 0;
+  int leftSpeed = 0;
+  int rightSpeed = 0;
+  float kP = 0;
+  float kI = 0;
+  float kD = 0;
   while (1) {
 
-    int l = Controller1.Axis3.position();
-    int r = Controller1.Axis2.position();
+    int leftTarget = Controller1.Axis3.position();
+    int rightTarget = Controller1.Axis2.position();
 
-    if (ls < l)
-      ls += 5;
-    else if (ls > l) 
-      ls -= 5;
-
-    if (rs < r)
-      rs += 5;
-    else if (rs > r)
-      rs -= 5;
+    int leftError = leftTarget - leftSpeed;
+    int rightError = rightTarget - rightSpeed;
+    
+    if (leftError < 12) {
+      leftIntegral += leftError;
+    } else {
+      leftIntegral = 0;
+    }
+    if (rightError < 12) {
+      rightIntegral += rightError;
+    } else {
+      rightIntegral = 0;
+    }
+    
+    int leftDerivative = leftError - leftPrevError;
+    int rightDerivative = rightError - rightPrevError
+    
+    leftSpeed = kP*leftError + kI*leftIntegral + kD*leftDerivative;
+    rightSpeed = kp*rightError +kI*rightIntegral + kD*rightDerivative;
     
     leftDrive.spin(forward, ls, percent);
     rightDrive.spin(reverse, rs, percent);
-
-    if (Controller1.ButtonL1.pressing()) {
-      
+    
+    int LeftPrevError = leftError;
+    int rightPrevError = rightError;
+    
+    if (Controller1.ButtonR1.pressing()) {
+      kP+=0.001;
+    } else if (Controller1.ButtonR2.pressing()) {
+      kp-=0.001;
     }
-    /*Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print(l);
-    Controller1.Screen.print(ls);
-    Controller1.Screen.print(r);
-    Controller1.Screen.print(rs);*/
-    wait(20, msec);
+    
+    wait(50, msec);
+    
   }
 }
 
