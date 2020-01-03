@@ -13,6 +13,7 @@ extern motor inverter;
 extern motor leftDrive;
 extern motor leftLift;
 extern motor leftIntake;
+extern limit invertLimit;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.
