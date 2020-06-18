@@ -1,290 +1,94 @@
 #include "vex.h"
-
+#include "trig.h"
+#include "iostream"
+#include "custommath.h"
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// GYRO                 inertial      1               
 // Controller1          controller                    
-// auton                bumper        C               
-// rightDrive           motor         9               
-// rightLift            motor         6               
-// rightIntake          motor         10              
-// inverterLeft         motor         3               
-// leftDrive            motor         2               
-// leftLift             motor         11              
-// leftIntake           motor         5               
-// invertLimit          limit         B               
-// inverterRight        motor         8               
-// inert                inertial      1               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 using namespace vex;
 
 competition Competition;
-int path = 0;
-
-void drStraight(int deg, int vel) {
-  leftDrive.setVelocity(vel, percent);
-  rightDrive.setVelocity(vel, percent);
-  leftDrive.rotateFor(forward, deg, degrees, false);
-  rightDrive.rotateFor(reverse, deg, degrees, false);
-}
-
-float sign(float a) {
-  return (a < 0) ? -1 : 1; 
-}
-bool complete = false;
-
-
-void flipout() {
-  leftLift.setVelocity(100, percent);
-  rightLift.setVelocity(100, percent);
-  inverterLeft.setPosition(0, degrees);
-  inverterLeft.setVelocity(90, percent);
-  inverterRight.setPosition(0, degrees);
-  inverterRight.setVelocity(90, percent);
-  inverterLeft.rotateFor(forward, 650, degrees, false);
-  inverterRight.rotateFor(forward, 650, degrees, false);
-  wait(1000, msec);
-  leftIntake.spin(reverse, 70, percent);
-  rightIntake.spin(reverse, 70, percent);
-  wait(700, msec);
-  leftIntake.stop(brakeType::coast);
-  rightIntake.stop(brakeType::coast);
-  inverterLeft.rotateFor(reverse, 320, degrees,false);
-  inverterRight.rotateFor(reverse, 320, degrees,false);
-  wait(700, msec);
-  leftLift.rotateFor(reverse, 350, degrees, false);
-  rightLift.rotateFor(reverse, 350, degrees, false);
-  inverterLeft.rotateFor(forward, 50, degrees, false);
-  inverterRight.rotateFor(forward, 50, degrees, false);
-  wait(1000, msec);
-}
-void stack() {
-  while(!invertLimit.pressing()) {
-    inverterLeft.spin(forward, 10, percent);
-    inverterRight.spin(forward, 10, percent);
-  } 
-  leftIntake.spin(reverse, 15, percent);
-  rightIntake.spin(reverse, 15, percent);
-  leftDrive.spin(reverse, 15, percent);
-  rightDrive.spin(reverse, 15, percent);
-  wait(1000, msec);
-  leftIntake.stop();
-  rightIntake.stop();
-  leftDrive.stop();
-  rightDrive.stop(); 
-}
-/*void gyroTurn(double target, double precision, int speed){
-  while (inert.rotation(degrees) < target + precision){
-    leftDrive.spin(forward, speed, percent);
-    rightDrive.spin(forward, speed, percent);
-  }
-  while (inert.rotation(degrees) > target - precision){
-    leftDrive.spin(reverse, speed, percent);
-    rightDrive.spin(reverse, speed, percent);
-  }
-  if (inert.rotation(degrees) > target - precision && inert.rotation(degrees) < target + precision){
-    leftDrive.stop(brakeType::hold);
-    rightDrive.stop(brakeType::hold);
-  }
-  else {
-    gyroTurn(target, precision, speed/2);
-  }
-}*/
-void gyroTurn(double target, double precision, int speed) {
-  if (target < 0) {
-
-    leftDrive.spin(reverse, speed, percent);
-    rightDrive.spin(reverse, speed, percent);
-    
-    waitUntil((inert.rotation(degrees) > (fabs(target) - precision)) 
-    && (inert.rotation(degrees) < (fabs(target) + precision)));
-
-    leftDrive.stop(brakeType::hold);
-    rightDrive.stop(brakeType::hold);
-
-    wait(250, msec);
-    
-    if (!((inert.rotation(degrees) > (fabs(target) - (precision/2))) 
-    && (inert.rotation(degrees) < (fabs(target) + (precision/2))))) {
-      gyroTurn(target, precision/2, speed/3);
-    }
-
-  } else if (target > 0) {
-
-    leftDrive.spin(forward, speed, percent);
-    rightDrive.spin(forward, speed, percent);
-    
-    waitUntil((inert.rotation(degrees) > (fabs(target) - precision)) 
-    && (inert.rotation(degrees) < (fabs(target) + precision)));
-
-    leftDrive.stop(brakeType::hold);
-    rightDrive.stop(brakeType::hold);
-
-    wait(250, msec);
-    
-    if (!((inert.rotation(degrees) > (fabs(target) - (precision/2))) 
-    && (inert.rotation(degrees) < (fabs(target) + (precision/2))))) {
-      gyroTurn(target, precision/2, speed/3);
-    }
-  }
-}
-
-//This function changes the auton path, and is executed when 
-//the bumper switch is pressed.
-void switchPath() {
-  if (path < 4) path++; else path = 0; 
-  Brain.Screen.clearLine();
-  Brain.Screen.setCursor(1, 1);
-  Brain.Screen.print(path);
-}
 
 void pre_auton(void) {
+
   vexcodeInit();
-  inert.calibrate();
-  auton.pressed(switchPath);
 }
 
-void stuff() {
-  //im stuff
-}
 void autonomous(void) {
-  switch(path) {
-    case 0: 
-      flipout();
-      leftIntake.stop(brakeType::coast);
-      rightIntake.stop(brakeType::coast);
-      leftDrive.spin(forward, 75, percent);
-      rightDrive.spin(reverse, 75, percent);
-      wait(700, msec);
-      leftDrive.spin(reverse, 75, percent);
-      rightDrive.spin(forward, 75, percent);
-      wait(700, msec);
-      leftDrive.stop(brakeType::hold);
-      rightDrive.stop(brakeType::hold);
-      break;
-    case 1:
-      flipout();
-      drStraight(600, 50); //1sec, travel forward and collect row of 4/intake preload
 
-      break;
-    case 2:
-      stuff();
-    case 3:
-      stuff();
-    case 4:
-      stuff();
-  }
 }
 
 void usercontrol(void) {
-  int yes = 20;
+  float goalAngle = 0;
+  float normalizer;
   while (1) {
-    Brain.Screen.clearScreen();
-    Brain.Screen.setCursor(1,1);
-    Brain.Screen.print(leftDrive.rotation(degrees));
-    Brain.Screen.newLine();
-    Brain.Screen.print(inert.rotation(degrees));
-    Brain.Screen.newLine();
-    Brain.Screen.print(rightDrive.rotation(degrees));
-    //Brain.Screen.print((fabs(leftDrive.rotation(degrees)) + fabs(rightDrive.rotation(degrees))) / 2);
-    leftDrive.spin(forward, Controller1.Axis3.position(), percent);
-    rightDrive.spin(reverse, Controller1.Axis2.position(), percent);
+    float gyroAngle = GYRO.heading();       //grab and store the gyro value
 
-    if (Controller1.ButtonL1.pressing()) {
+    float joyX = Controller1.Axis4.position();      //
+    float joyY = Controller1.Axis3.position();      // Set variables for each joystick axis
+    float joyZ = Controller1.Axis1.position() / 43; // this here is divided by 43 to make rotation slower and less unwieldy
+    
+    goalAngle += joyZ;
 
-      leftLift.spin(reverse, 80, percent);
-      rightLift.spin(reverse, 80, percent);
-      inverterLeft.spin(forward, 100, percent);
-      inverterRight.spin(forward, 100, percent);
-
-    } else if (Controller1.ButtonL2.pressing()) {
-
-      leftLift.spin(forward, 80, percent);
-      rightLift.spin(forward, 80, percent);
-      inverterLeft.spin(reverse, 100, percent);
-      inverterRight.spin(reverse, 100, percent);
-
-    } else {
-
-      leftLift.stop(brakeType::hold);
-      rightLift.stop(brakeType::hold);
-
-      if (!Controller1.ButtonUp.pressing() && !Controller1.ButtonDown.pressing())
-
-        inverterLeft.stop(brakeType::hold);
-        inverterRight.stop(brakeType::hold);
-
-    }
-    if (Controller1.ButtonR1.pressing()) {
-
-      leftIntake.spin(forward, 9, volt);
-      rightIntake.spin(forward, 9, volt);
-
-    } else if (Controller1.ButtonR2.pressing()) {
-
-      leftIntake.spin(reverse, 9, volt);
-      rightIntake.spin(reverse, 9, volt);
-
-    } else {
-
-      leftIntake.stop(brakeType::hold);
-      rightIntake.stop(brakeType::hold);
-
-    }
-    if (Controller1.ButtonUp.pressing()) {
-
-      if (!invertLimit.pressing()) {
-
-        inverterLeft.spin(forward, 85, percent);
-        inverterRight.spin(forward, 85, percent);
-
-      }
-    } else if (Controller1.ButtonDown.pressing()) {
-
-      inverterLeft.spin(reverse, 85, percent);
-      inverterRight.spin(reverse, 85, percent);
-
-    }
-    if (Controller1.ButtonX.pressing() && !invertLimit.pressing()) {
-
-      inverterLeft.spin(forward, 20, percent);
-      inverterRight.spin(forward, 20, percent);
-
-    } 
-    if (Controller1.ButtonB.pressing()) {
-
-      leftLift.spin(reverse, 35, percent);
-      rightLift.spin(reverse, 35, percent);
-
-      inverterLeft.spin(forward, 44, percent);
-      inverterRight.spin(forward, 44, percent);
-
-    } 
-    if (Controller1.ButtonRight.pressing()) {
-
-      rightLift.spin(reverse, 50, percent);
-
-    } else if (Controller1.ButtonLeft.pressing()) {
-
-      leftLift.spin(reverse, 50, percent);
-
-    }
-    if (Controller1.ButtonA.pressing()) {
-
-      leftIntake.spin(reverse, 20, percent);
-      rightIntake.spin(reverse, 20, percent);
-      leftDrive.spin(reverse, yes, percent);
-      rightDrive.spin(reverse, yes, percent);
-
+    if (goalAngle >= 360) {
+      goalAngle -= 360;
+    }                                       //adjust goalAngle to wrap around to 0 from 360 and vice versa
+    if (goalAngle < 0) {
+      goalAngle = 360 - fabs(goalAngle);
     }
 
-    if (Controller1.ButtonY.pressing()) {
+    float vel = (sqrt((joyX * joyX) + (joyY * joyY)) / M_SQRT2); //get velocity value out of joystick values
 
-      leftDrive.spin(forward, 30, percent);
-      rightDrive.spin(forward, 30, percent);
+    float x2 = vel * (dcos(datan2(joyY, joyX) - gyroAngle));
+    float y2 = vel * (dsin(datan2(joyY, joyX) - gyroAngle));
 
+    if (x2 == 0) {
+      x2 = 0.0001; //safeguard against x2 being zero so no errors occur.
     }
+    
+    float fL = sin(atan(y2 / x2) + 45) * sqrt((x2 * x2) + (y2 * y2)); //Set the motors to their appropriate speed based on the formula (each are offset by a factor of pi/2 to account for the 90 degree difference in the wheels)
+    float fR = sin(atan(y2 / x2) + 135) * sqrt((x2 * x2) + (y2 * y2));
+    float bR = sin(atan(y2 / x2) + 225) * sqrt((x2 * x2) + (y2 * y2));
+    float bL = sin(atan(y2 / x2) + 315) * sqrt((x2 * x2) + (y2 * y2));
+
+    if(x2 < 0) //Inverts the motors when x2 is less than 0 to account for the nonnegative sine curve
+    {
+      fL *= -1;
+      fR *= -1;
+      bR *= -1;
+      bL *= -1;
+    }
+
+    float angleError = (gyroAngle - goalAngle) / 5; //SMALLER CONSTANT MEANS AGGRESSIVE TURNING, NEED TO TUNE
+
+    if (fabs(angleError) > 40) { //cap the normalizer speed, larger constant means faster turning.
+      angleError = 0.5 * sign(angleError);
+    }
+
+    float maxAxis = MAX(fabs(joyX), fabs(joyY), fabs(angleError)); //Find the maximum input given by the controller's axes and the angle corrector
+    float maxOutput = MAX(fabs(fL), fabs(fR), fabs(bR), fabs(bL)); //Find the maximum output that the drive program has calculated
+      //why the hell does the max function not support 4 arguments like why the fck do i have to do this nested max function bs
+    if(maxOutput == 0 || maxAxis == 0)
+    {
+      normalizer = 0; //Prevent the undefined value for normalizer
+    }
+    else
+    {
+      normalizer = maxAxis / maxOutput;
+    }
+  
+    fL *= normalizer;
+    fR *= normalizer;
+    bR *= normalizer;
+    bL *= normalizer;
+    
+  
+    //need TESTING ON AN ACTUAL ROBOT TOPAJ{EPOTJH{PIOADTIPH{BIPDT} hzh aey5hye6q565q63563hfrfxtgsfrzrxtgfrzt4exrfe4zr4frf4e34re3f4s3er545re3fr3f54re3
+    
     wait(20, msec); 
   }
 }
