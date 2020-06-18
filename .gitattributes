@@ -1,0 +1,7 @@
+# dont count the files that come in the project folder
+* text=auto
+makefile linguist-vendored
+mkrules.mk linguist-vendored
+mkenv.mk linguist-vendored
+compile_commands.json linguist-vendored
+vex.h linguist-vendored
