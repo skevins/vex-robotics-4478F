@@ -29,14 +29,13 @@ void autonomous(void) {
 void usercontrol(void) {
   GYRO.calibrate();
   wait(2000, msec);
-  float goalAngle = 0;
-  float normalizer;
+  double goalAngle = 0;
+  double normalizer;
   while (1) {
-    float gyroAngle = GYRO.heading();       //grab and store the gyro value
-
-    float joyX = Controller1.Axis4.position();      //
-    float joyY = Controller1.Axis3.position();      // Set variables for each joystick axis
-    float joyZ = Controller1.Axis1.position()/20; // this here is divided by 43 to make rotation slower and less unwieldy
+    double gyroAngle = GYRO.heading();       //grab and store the gyro value
+    double joyX = -Controller1.Axis4.position();      //
+    double joyY = -Controller1.Axis3.position();      // Set variables for each joystick axis
+    double joyZ = Controller1.Axis1.position()/20; // this here is divided by 20 to make rotation slower and less unwieldy
     
     goalAngle += joyZ;
 
@@ -47,19 +46,19 @@ void usercontrol(void) {
       goalAngle = 360 - fabs(goalAngle);
     }
 
-    float vel = (sqrt((joyX * joyX) + (joyY * joyY)) / M_SQRT2); //get velocity value out of joystick values
+    double vel = (sqrt((joyX * joyX) + (joyY * joyY)) / M_SQRT2); //get velocity value out of joystick values
 
-    float x2 = vel * (dcos(datan2(joyY, joyX) - gyroAngle));
-    float y2 = vel * (dsin(datan2(joyY, joyX) - gyroAngle));
+    double x2 = vel * (dcos(datan2(joyY, joyX) - gyroAngle));
+    double y2 = vel * (dsin(datan2(joyY, joyX) - gyroAngle));
 
     if (x2 == 0) {
       x2 = 0.0001; //safeguard against x2 being zero so no errors occur.
     }
     
-    float fL = dsin(datan(y2 / x2) + 45) * sqrt((x2 * x2) + (y2 * y2)); //Set the motors to their appropriate speed based on the formula (each are offset by a factor of pi/2 to account for the 90 degree difference in the wheels)
-    float fR = dsin(datan(y2 / x2) + 135) * sqrt((x2 * x2) + (y2 * y2));
-    float bR = dsin(datan(y2 / x2) + 225) * sqrt((x2 * x2) + (y2 * y2));
-    float bL = dsin(datan(y2 / x2) + 315) * sqrt((x2 * x2) + (y2 * y2));
+    double fL = dsin(datan(y2 / x2) + 45) * sqrt((x2 * x2) + (y2 * y2)); //Set the motors to their appropriate speed based on the formula (each are offset by a factor of pi/2 to account for the 90 degree difference in the wheels)
+    double fR = dsin(datan(y2 / x2) + 135) * sqrt((x2 * x2) + (y2 * y2));
+    double bR = dsin(datan(y2 / x2) + 225) * sqrt((x2 * x2) + (y2 * y2));
+    double bL = dsin(datan(y2 / x2) + 315) * sqrt((x2 * x2) + (y2 * y2));
 
     if(x2 < 0) { //Inverts the motors when x2 is less than 0 to account for the nonnegative sine curve
       fL *= -1;
@@ -68,17 +67,21 @@ void usercontrol(void) {
       bL *= -1;
     }
 
-    float angleError = (gyroAngle - goalAngle); //SMALLER CONSTANT MEANS AGGRESSIVE TURNING, NEED TO TUNE
+    double angleError = (gyroAngle - goalAngle);
+    if (angleError > 180) {
+      angleError = -((360 - gyroAngle) + goalAngle);
+    }
 
-    /*if (fabs(angleError) > 40) { //cap the normalizer speed, larger constant means faster turning.
-      angleError = 0.5;
-    }*/
-    fL += angleError; //Include the value of the turning axis in the output. We found it most comfortable to reduce the turning strength significantly, but the constant (2) can be adjusted to your driver's preference
-    fR += angleError;
-    bR += angleError;
-    bL += angleError;
-    float maxAxis = MAX(fabs(joyX), fabs(joyY), fabs(angleError)); //Find the maximum input given by the controller's axes and the angle corrector
-    float maxOutput = MAX(fabs(fL), fabs(fR), fabs(bR), fabs(bL)); //Find the maximum output that the drive program has calculated
+    if (angleError < -180) {
+      angleError = (360 - goalAngle) + gyroAngle;
+    }
+    fL -= angleError; //Include the value of the turning axis in the output. We found it most comfortable to reduce the turning strength significantly, but the constant (2) can be adjusted to your driver's preference
+    fR -= angleError;
+    bR -= angleError;
+    bL -= angleError;
+
+    double maxAxis = MAX(fabs(joyX), fabs(joyY), fabs(angleError)); //Find the maximum input given by the controller's axes and the angle corrector
+    double maxOutput = MAX(fabs(fL), fabs(fR), fabs(bR), fabs(bL)); //Find the maximum output that the drive program has calculated
       //why the hell does the max function not support 4 arguments like why the fck do i have to do this nested max function bs
     if(maxOutput == 0 || maxAxis == 0)
     {
@@ -131,7 +134,7 @@ void usercontrol(void) {
     backRight.spin(forward, bR, percent);
     
     //need TESTING ON AN ACTUAL ROBOT TOPAJ{EPOTJH{PIOADTIPH{BIPDT} hzh aey5hye6q565q63563hfrfxtgsfrzrxtgfrzt4exrfe4zr4frf4e34re3f4s3er545re3fr3f54re3
-    
+    //i got testing:)
     wait(20, msec); 
   }
 }
