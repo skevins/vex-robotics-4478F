@@ -16,7 +16,13 @@
 using namespace vex;
 
 competition Competition;
-
+void resetGyro() {
+  backLeft.stop();
+  backRight.stop();
+  frontLeft.stop();
+  frontRight.stop();
+  GYRO.calibrate();
+}
 void pre_auton(void) {
 
   vexcodeInit();
@@ -27,16 +33,22 @@ void autonomous(void) {
 }
 
 void usercontrol(void) {
-  GYRO.calibrate();
+  resetGyro();
   wait(2000, msec);
+  Controller1.ButtonA.pressed(resetGyro);
   double goalAngle = 0;
   double normalizer;
-  double speeds[4];
+  double angleIntegral = 0;
+  double angleDerivative;
+  double previousAngle;
+  double kI = 0.02;
+  double kD = 0.8;
+  double angleError = 0;
   while (1) {
     double gyroAngle = GYRO.heading();       //grab and store the gyro value
     double joyX = Controller1.Axis4.position();      //
     double joyY = -Controller1.Axis3.position();      // Set variables for each joystick axis
-    double joyZ = Controller1.Axis1.position()/20; // this here is divided by 20 to make rotation slower and less unwieldy
+    double joyZ = Controller1.Axis1.position()/35; // this here is divided by 30 to make rotation slower and less unwieldy
     
     goalAngle += joyZ;
 
@@ -72,8 +84,8 @@ void usercontrol(void) {
       bR *= -1;
       bL *= -1;
     }
-    
-    double angleError = (gyroAngle - goalAngle);
+    previousAngle = angleError;
+    angleError = (gyroAngle - goalAngle);
     if (angleError > 180) {
       angleError = -((360 - gyroAngle) + goalAngle);
     }
@@ -81,15 +93,21 @@ void usercontrol(void) {
     if (angleError < -180) {
       angleError = (360 - goalAngle) + gyroAngle;
     }
-    
-    fL -= angleError; //Include the value of the turning axis in the output. We found it most comfortable to reduce the turning strength significantly, but the constant (2) can be adjusted to your driver's preference
-    fR -= angleError;
-    bR -= angleError;
-    bL -= angleError;
+
+    if (fabs(angleError) < 10) {
+      angleIntegral += angleError;
+    }
+    angleDerivative = previousAngle - angleError;
+    double turnValue = angleError*1.5 + kI * angleIntegral + kD * angleDerivative;
+
+    fL -= turnValue; //Include the value of the turning axis in the output. We found it most comfortable to reduce the turning strength significantly, but the constant (2) can be adjusted to your driver's preference
+    fR -= turnValue;
+    bR -= turnValue;
+    bL -= turnValue;
     
     double maxAxis = MAX(fabs(joyX), fabs(joyY), fabs(angleError)); //Find the maximum input given by the controller's axes and the angle corrector
     double maxOutput = MAX(fabs(fL), fabs(fR), fabs(bR), fabs(bL)); //Find the maximum output that the drive program has calculated
-      //why the hell does the max function not support 4 arguments like why the fck do i have to do this nested max function bs
+      
     if(maxOutput == 0 || maxAxis == 0)
     {
       normalizer = 0; //Prevent the undefined value for normalizer
