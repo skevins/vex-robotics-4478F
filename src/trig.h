@@ -1,19 +1,10 @@
 #ifndef __SPED__
-# define __SPED__ //@FuzzySn0wman
+#define __SPED__ //@FuzzySn0wman
 
 #include <math.h>
 
-/*
-written by aiden pringle very dumbly :)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
-*/
-
-#ifndef radToDeg
 # define radToDeg   57.2957795130823
-#endif
-
-#ifndef degToRad
 # define degToRad   0.01745329251994
-#endif
 
 //multiple function declarations are required because of overloading, so that any type works.
 /* dsin functions | returns sine of INPUT but input and output are in degrees, same goes for all other functions */
@@ -50,4 +41,11 @@ float dasin  (float INPUT)     { return asin(INPUT)*radToDeg; }
 float datan  (int INPUT)       { return atan(INPUT)*radToDeg; } 
 double datan  (double INPUT)    { return atan(INPUT)*radToDeg; }
 float datan  (float INPUT)     { return atan(INPUT)*radToDeg; }
+
+#define toRadians(INPUT) \
+  ((INPUT) * degToRad)
+
+#define toDegrees(INPUT) \
+  ((INPUT) * radToDeg)
+
 #endif //__SPED__

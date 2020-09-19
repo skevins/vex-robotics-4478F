@@ -14,13 +14,20 @@ motor frontLeft = motor(PORT1, ratio18_1, false);
 motor frontRight = motor(PORT2, ratio18_1, false);
 motor backLeft = motor(PORT3, ratio18_1, false);
 motor backRight = motor(PORT4, ratio18_1, false);
+motor leftFlipOut = motor(PORT5, ratio6_1, false);
+motor rightFlipOut = motor(PORT6, ratio6_1, true);
+motor middleIntake = motor(PORT7, ratio6_1, false);
+motor finalIntake = motor(PORT12, ratio6_1, false);
+encoder leftEncoder = encoder(Brain.ThreeWirePort.A);
+encoder rightEncoder = encoder(Brain.ThreeWirePort.C);
+encoder backEncoder = encoder(Brain.ThreeWirePort.E);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
 bool RemoteControlCodeEnabled = true;
 
 /**
- * Used to initialize code/tasks/devices added using tools in VEXcode Text.
+ * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
  * 
  * This should be called at the start of your int main function.
  */

@@ -1,15 +1,10 @@
 #ifndef __AIDENMATH__
 #define __AIDENMATH__
-//written because i need some funny math functions or crap like std::math was broken for some shtty reason
-int sign(float val) {
-  return val < 0 ? -1 : 1;
-}
-int sign(int val) {
-  return val < 0 ? -1 : 1;
-}
-int sign(double val) {
-  return val < 0 ? -1 : 1;
-}
+//dont question why i made this
+
+//sign values 
+#define sign(val) \
+  (val) < 0 ? -1 : 1
 
 float MAX(float INPUT, float INPUT2, float INPUT3, float INPUT4) {
   auto _temp = INPUT > INPUT2 ? INPUT : INPUT2; 
